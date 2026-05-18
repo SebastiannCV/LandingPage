@@ -1,4 +1,4 @@
-
+// Sombra en nav al hacer scroll
 window.addEventListener('scroll', () => {
   const nav = document.querySelector('nav');
   nav.style.boxShadow = window.scrollY > 40
@@ -6,7 +6,10 @@ window.addEventListener('scroll', () => {
     : 'none';
 });
 
-const items = document.querySelectorAll('.card, .chart-box, .contact-item, .horario-item');
+// Animación al aparecer elementos
+const items = document.querySelectorAll(
+  '.card, .chart-box, .espec-item, .horario-item, .barra-item'
+);
 const observer = new IntersectionObserver((entries) => {
   entries.forEach(entry => {
     if (entry.isIntersecting) {
@@ -23,11 +26,13 @@ items.forEach(el => {
   observer.observe(el);
 });
 
-const azul     = '#1a3a6b';
-const celeste  = '#00aeef';
-const celesClaro = '#7dd4f5';
-const celesMin   = '#c0eafc';
+// Colores
+const azul        = '#1a3a6b';
+const celeste     = '#00aeef';
+const celesClaro  = '#7dd4f5';
+const celesMin    = '#b3e5fc';
 
+// Gráfico 1 — Barras: atenciones mensuales
 new Chart(document.getElementById('chartAtenciones'), {
   type: 'bar',
   data: {
@@ -48,6 +53,7 @@ new Chart(document.getElementById('chartAtenciones'), {
   }
 });
 
+// Gráfico 2 — Dona: distribución por servicio
 new Chart(document.getElementById('chartServicios'), {
   type: 'doughnut',
   data: {
@@ -66,6 +72,7 @@ new Chart(document.getElementById('chartServicios'), {
   }
 });
 
+// Gráfico 3 — Barras horizontales: género
 new Chart(document.getElementById('chartGenero'), {
   type: 'bar',
   data: {
@@ -87,6 +94,7 @@ new Chart(document.getElementById('chartGenero'), {
   }
 });
 
+// Gráfico 4 — Línea: cirugías por trimestre
 new Chart(document.getElementById('chartCirugias'), {
   type: 'line',
   data: {
