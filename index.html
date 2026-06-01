@@ -12,7 +12,7 @@
   <!-- NAV -->
   <nav>
     <div class="logo">
-      <span class="logo-cruz">✚</span>
+      <img src="logo.png" alt="Hospital La Caleta Logo" class="logo-img"/>
       Hospital <strong>La Caleta</strong>
     </div>
     <ul>
@@ -20,6 +20,7 @@
       <li><a href="#especialidades">Especialidades</a></li>
       <li><a href="#nosotros">Nosotros</a></li>
       <li><a href="#dashboard">Estadísticas</a></li>
+      <li><a href="#bpm">Procesos</a></li>
       <li><a href="#contacto">Contacto</a></li>
     </ul>
   </nav>
@@ -212,22 +213,160 @@
       <div class="chart-box">
         <h4>Atenciones Mensuales 2024</h4>
         <p class="chart-sub">Consulta externa + Emergencia</p>
-        <canvas id="chartAtenciones"></canvas>
+        <div class="chart-wrap">
+          <canvas id="chartAtenciones"></canvas>
+        </div>
       </div>
       <div class="chart-box">
         <h4>Distribución por Servicio</h4>
         <p class="chart-sub">Porcentaje de atenciones por área</p>
-        <canvas id="chartServicios"></canvas>
+        <div class="chart-wrap chart-wrap--donut">
+          <canvas id="chartServicios"></canvas>
+        </div>
       </div>
       <div class="chart-box">
         <h4>Pacientes por Género</h4>
         <p class="chart-sub">Total de atendidos 2024</p>
-        <canvas id="chartGenero"></canvas>
+        <div class="chart-wrap">
+          <canvas id="chartGenero"></canvas>
+        </div>
       </div>
       <div class="chart-box">
         <h4>Cirugías Realizadas</h4>
         <p class="chart-sub">Por trimestre 2022 – 2024</p>
-        <canvas id="chartCirugias"></canvas>
+        <div class="chart-wrap">
+          <canvas id="chartCirugias"></canvas>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- BPM - PROCESO DE CITA MÉDICA -->
+  <section id="bpm">
+    <div class="section-header">
+      <span class="label">Gestión de Procesos</span>
+      <h2>Proceso de <span class="celeste">Cita Médica</span></h2>
+      <p class="intro">
+        Diagrama BPM del proceso de reserva de cita médica en el Hospital La Caleta,
+        que muestra los flujos entre el paciente, admisión, enfermería y el médico.
+      </p>
+    </div>
+
+    <!-- Pasos visuales del proceso -->
+    <div class="bpm-steps">
+      <div class="bpm-step">
+        <div class="bpm-step-num">1</div>
+        <div class="bpm-step-info">
+          <h5>Solicitud</h5>
+          <p>Presencial, telefónica o web</p>
+        </div>
+      </div>
+      <div class="bpm-arrow">&#8594;</div>
+      <div class="bpm-step">
+        <div class="bpm-step-num">2</div>
+        <div class="bpm-step-info">
+          <h5>Admisión</h5>
+          <p>Verificación y registro del paciente</p>
+        </div>
+      </div>
+      <div class="bpm-arrow">&#8594;</div>
+      <div class="bpm-step">
+        <div class="bpm-step-num">3</div>
+        <div class="bpm-step-info">
+          <h5>Ticket</h5>
+          <p>Generación de número de turno</p>
+        </div>
+      </div>
+      <div class="bpm-arrow">&#8594;</div>
+      <div class="bpm-step">
+        <div class="bpm-step-num">4</div>
+        <div class="bpm-step-info">
+          <h5>Enfermería</h5>
+          <p>Triaje y signos vitales</p>
+        </div>
+      </div>
+      <div class="bpm-arrow">&#8594;</div>
+      <div class="bpm-step">
+        <div class="bpm-step-num">5</div>
+        <div class="bpm-step-info">
+          <h5>Consulta</h5>
+          <p>Evaluación y diagnóstico médico</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Diagrama BPM completo -->
+    <div class="bpm-diagram-container">
+      <div class="bpm-diagram-header">
+        <span class="bpm-tag">&#128196; Diagrama BPM — Flujo Completo</span>
+        <button class="bpm-zoom-btn" onclick="toggleBPMZoom()" id="bpmZoomBtn">
+          &#128269; Ver en pantalla completa
+        </button>
+      </div>
+      <div class="bpm-img-wrap" id="bpmImgWrap">
+        <img src="BPM-Caleta.png" alt="Diagrama BPM - Proceso de Cita Médica Hospital La Caleta" class="bpm-img" id="bpmImg"/>
+      </div>
+      <p class="bpm-note">
+        &#9432; Toca la imagen para ampliar. El diagrama muestra los flujos entre las áreas de
+        Admisión – Estadística e Informática, el Paciente, Enfermería y el Médico.
+      </p>
+    </div>
+
+    <!-- Modal para pantalla completa -->
+    <div class="bpm-modal" id="bpmModal" onclick="closeBPMModal()">
+      <div class="bpm-modal-content" onclick="event.stopPropagation()">
+        <button class="bpm-modal-close" onclick="closeBPMModal()">&#10005;</button>
+        <img src="BPM-Caleta.png" alt="Diagrama BPM Hospital La Caleta" class="bpm-modal-img"/>
+      </div>
+    </div>
+  </section>
+
+  <!-- MAPA -->
+  <section id="mapa">
+    <div class="section-header">
+      <span class="label">Ubicación</span>
+      <h2>¿Cómo <span class="celeste">llegar?</span></h2>
+      <p class="intro">
+        Nos encontramos en la Av. Malecón Grau s/n, Urb. La Caleta, Chimbote, Áncash.
+        Fácil acceso desde el centro de la ciudad.
+      </p>
+    </div>
+    <div class="mapa-container">
+      <iframe
+        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3942.5!2d-78.593!3d-9.0743!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x91af9dc4e9b8acef%3A0xd59d2428eaeb6acf!2sHospital%20La%20Caleta!5e0!3m2!1ses!2spe!4v1700000000000"
+        width="100%"
+        height="420"
+        style="border:0;"
+        allowfullscreen=""
+        loading="lazy"
+        referrerpolicy="no-referrer-when-downgrade"
+        title="Ubicación Hospital La Caleta en Google Maps">
+      </iframe>
+      <div class="mapa-info">
+        <div class="mapa-dato">
+          <div class="mapa-icono">&#128205;</div>
+          <div>
+            <strong>Dirección</strong>
+            <p>Av. Malecón Grau s/n, Urb. La Caleta, Chimbote, Áncash</p>
+          </div>
+        </div>
+        <div class="mapa-dato">
+          <div class="mapa-icono">&#128222;</div>
+          <div>
+            <strong>Teléfonos</strong>
+            <p>(043) 327-589 &nbsp;|&nbsp; +51 043-702030</p>
+          </div>
+        </div>
+        <div class="mapa-dato">
+          <div class="mapa-icono">&#128337;</div>
+          <div>
+            <strong>Emergencias</strong>
+            <p>Atención las 24 horas del día, todos los días</p>
+          </div>
+        </div>
+        <a href="https://www.google.com/maps?cid=15383473528360518863" target="_blank" rel="noopener" class="btn mapa-btn">
+          &#128205; Abrir en Google Maps
+        </a>
       </div>
     </div>
   </section>
@@ -266,7 +405,7 @@
         <div class="subline"></div>
         <p>Centro hospitalario público de Segundo Nivel II-2 que ofrece servicios especializados en salud, administrado por el Gobierno Regional de Áncash, ubicado en el distrito de Chimbote, provincia del Santa.</p>
         <div class="footer-social">
-          <div class="social-btn">f</div>
+          <a href="https://www.facebook.com/HospitalLaCaletaoficial" target="_blank" rel="noopener" class="social-btn" aria-label="Facebook">f</a>
           <div class="social-btn">t</div>
           <div class="social-btn">in</div>
         </div>
