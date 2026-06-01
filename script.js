@@ -1,4 +1,4 @@
-// Sombra en nav al hacer scroll
+// ── Sombra en nav al hacer scroll ──
 window.addEventListener('scroll', () => {
   const nav = document.querySelector('nav');
   nav.style.boxShadow = window.scrollY > 40
@@ -6,9 +6,9 @@ window.addEventListener('scroll', () => {
     : 'none';
 });
 
-// Animación al aparecer elementos
+// ── Animación al aparecer elementos ──
 const items = document.querySelectorAll(
-  '.card, .chart-box, .espec-item, .horario-item, .barra-item'
+  '.card, .chart-box, .espec-item, .horario-item, .barra-item, .bpm-step, .mapa-dato'
 );
 const observer = new IntersectionObserver((entries) => {
   entries.forEach(entry => {
@@ -26,13 +26,42 @@ items.forEach(el => {
   observer.observe(el);
 });
 
-// Colores
+// ── BPM: abrir imagen al hacer clic ──
+const bpmImgWrap = document.getElementById('bpmImgWrap');
+if (bpmImgWrap) {
+  bpmImgWrap.addEventListener('click', () => {
+    openBPMModal();
+  });
+}
+
+function openBPMModal() {
+  const modal = document.getElementById('bpmModal');
+  if (modal) modal.classList.add('active');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeBPMModal() {
+  const modal = document.getElementById('bpmModal');
+  if (modal) modal.classList.remove('active');
+  document.body.style.overflow = '';
+}
+
+function toggleBPMZoom() {
+  openBPMModal();
+}
+
+// Cerrar modal con tecla Escape
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape') closeBPMModal();
+});
+
+// ── Colores para gráficos ──
 const azul        = '#1a3a6b';
 const celeste     = '#00aeef';
 const celesClaro  = '#7dd4f5';
 const celesMin    = '#b3e5fc';
 
-// Gráfico 1 — Barras: atenciones mensuales
+// ── Gráfico 1: Barras — atenciones mensuales ──
 new Chart(document.getElementById('chartAtenciones'), {
   type: 'bar',
   data: {
@@ -45,15 +74,24 @@ new Chart(document.getElementById('chartAtenciones'), {
     }]
   },
   options: {
+    responsive: true,
+    maintainAspectRatio: false,
     plugins: { legend: { display: false } },
     scales: {
-      y: { beginAtZero: true, grid: { color: '#eef4fa' } },
-      x: { grid: { display: false } }
+      y: {
+        beginAtZero: true,
+        grid: { color: '#eef4fa' },
+        ticks: { font: { size: 10 } }
+      },
+      x: {
+        grid: { display: false },
+        ticks: { font: { size: 10 } }
+      }
     }
   }
 });
 
-// Gráfico 2 — Dona: distribución por servicio
+// ── Gráfico 2: Dona — distribución por servicio ──
 new Chart(document.getElementById('chartServicios'), {
   type: 'doughnut',
   data: {
@@ -66,13 +104,22 @@ new Chart(document.getElementById('chartServicios'), {
     }]
   },
   options: {
+    responsive: true,
+    maintainAspectRatio: false,
     plugins: {
-      legend: { position: 'bottom', labels: { font: { size: 11 } } }
+      legend: {
+        position: 'bottom',
+        labels: {
+          font: { size: 10 },
+          boxWidth: 12,
+          padding: 8
+        }
+      }
     }
   }
 });
 
-// Gráfico 3 — Barras horizontales: género
+// ── Gráfico 3: Barras horizontales — género ──
 new Chart(document.getElementById('chartGenero'), {
   type: 'bar',
   data: {
@@ -85,16 +132,25 @@ new Chart(document.getElementById('chartGenero'), {
     }]
   },
   options: {
+    responsive: true,
+    maintainAspectRatio: false,
     indexAxis: 'y',
     plugins: { legend: { display: false } },
     scales: {
-      x: { beginAtZero: true, grid: { color: '#eef4fa' } },
-      y: { grid: { display: false } }
+      x: {
+        beginAtZero: true,
+        grid: { color: '#eef4fa' },
+        ticks: { font: { size: 10 } }
+      },
+      y: {
+        grid: { display: false },
+        ticks: { font: { size: 10 } }
+      }
     }
   }
 });
 
-// Gráfico 4 — Línea: cirugías por trimestre
+// ── Gráfico 4: Línea — cirugías por trimestre ──
 new Chart(document.getElementById('chartCirugias'), {
   type: 'line',
   data: {
@@ -106,14 +162,24 @@ new Chart(document.getElementById('chartCirugias'), {
       backgroundColor: 'rgba(0,174,239,0.08)',
       pointBackgroundColor: azul,
       tension: 0.3,
-      fill: true
+      fill: true,
+      pointRadius: 3
     }]
   },
   options: {
+    responsive: true,
+    maintainAspectRatio: false,
     plugins: { legend: { display: false } },
     scales: {
-      y: { beginAtZero: false, grid: { color: '#eef4fa' } },
-      x: { grid: { display: false } }
+      y: {
+        beginAtZero: false,
+        grid: { color: '#eef4fa' },
+        ticks: { font: { size: 10 } }
+      },
+      x: {
+        grid: { display: false },
+        ticks: { font: { size: 9 } }
+      }
     }
   }
 });
