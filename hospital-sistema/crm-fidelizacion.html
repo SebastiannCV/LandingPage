@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>CRM · Fidelización — Hospital La Caleta</title>
+  <link rel="stylesheet" href="sistema.css"/>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+  <div class="backdrop"></div>
+  <div class="app">
+ 
+    <!-- ===== SIDEBAR ===== -->
+    <aside class="sidebar">
+      <div class="side-brand">
+        <div class="mark">✚</div>
+        <div><h2>La Caleta</h2><span>ERP · CRM</span></div>
+      </div>
+      <div class="side-group">ERP — Gestión</div>
+      <a class="side-link" href="erp.html"><span class="ic">📊</span> Dashboard</a>
+      <div class="side-group">CRM — Pacientes</div>
+      <a class="side-link" href="crm-email.html"><span class="ic">✉️</span> Correos</a>
+      <a class="side-link active" href="crm-fidelizacion.html"><span class="ic">💙</span> Fidelización</a>
+      <div class="side-foot">
+        <p class="note">Datos de demostración.<br>Hospital La Caleta · Chimbote, Áncash.</p>
+      </div>
+    </aside>
+ 
+    <!-- ===== MAIN ===== -->
+    <div class="main">
+      <header class="topbar">
+        <div style="display:flex;align-items:center;gap:14px">
+          <button class="menu-toggle" data-menu-toggle>☰</button>
+          <div class="crumb">CRM &nbsp;/&nbsp; <b>Fidelización</b></div>
+        </div>
+        <div class="top-right">
+          <input class="search-mini" placeholder="Buscar…"/>
+          <div class="user-chip">
+            <div class="avatar" data-avatar>DG</div>
+            <div class="meta"><strong data-username>Usuario</strong><span data-userrole>Rol</span></div>
+          </div>
+          <button class="logout-btn" onclick="Auth.logout()">Salir</button>
+        </div>
+      </header>
+ 
+      <section class="content">
+        <div class="page-head">
+          <h1>Tablero de Fidelización — CRM</h1>
+          <p>Relación con el paciente: retención, satisfacción y segmentación (datos demostrativos)</p>
+        </div>
+ 
+        <!-- KPIs -->
+        <div class="kpi-grid">
+          <div class="kpi">
+            <div class="kpi-top"><div class="kpi-ic">👥</div><span class="kpi-trend trend-up">+8%</span></div>
+            <div class="kpi-val">4 210</div>
+            <div class="kpi-label">Pacientes activos</div>
+          </div>
+          <div class="kpi">
+            <div class="kpi-top"><div class="kpi-ic">🔁</div><span class="kpi-trend trend-up">+3%</span></div>
+            <div class="kpi-val">74%</div>
+            <div class="kpi-label">Tasa de retención</div>
+          </div>
+          <div class="kpi">
+            <div class="kpi-top"><div class="kpi-ic">⭐</div><span class="kpi-trend trend-up">Bueno</span></div>
+            <div class="kpi-val">8.6</div>
+            <div class="kpi-label">Satisfacción (de 10)</div>
+          </div>
+          <div class="kpi">
+            <div class="kpi-top"><div class="kpi-ic">⚠️</div><span class="kpi-trend trend-down">en riesgo</span></div>
+            <div class="kpi-val">312</div>
+            <div class="kpi-label">Pacientes inactivos</div>
+          </div>
+        </div>
+ 
+        <!-- Gráficos -->
+        <div class="grid-23">
+          <div class="card2">
+            <div class="c-head">
+              <h3>Retención mensual</h3>
+              <span class="c-sub">% de pacientes que regresan · 2024</span>
+            </div>
+            <div class="chart-holder"><canvas id="cRetencion"></canvas></div>
+          </div>
+          <div class="card2">
+            <div class="c-head">
+              <h3>Segmentación de pacientes</h3>
+              <span class="c-sub">Por nivel de fidelidad</span>
+            </div>
+            <div class="chart-holder"><canvas id="cSegmento"></canvas></div>
+          </div>
+        </div>
+ 
+        <div class="grid-2">
+          <div class="card2">
+            <div class="c-head">
+              <h3>Satisfacción por servicio</h3>
+              <span class="c-sub">Encuestas post-atención (de 10)</span>
+            </div>
+            <div class="chart-holder sm"><canvas id="cSatisf"></canvas></div>
+          </div>
+ 
+          <div class="card2">
+            <div class="c-head">
+              <h3>Pacientes más frecuentes</h3>
+              <span class="c-sub">Top por número de visitas</span>
+            </div>
+            <table class="tbl">
+              <thead><tr><th>Paciente</th><th>Especialidad</th><th>Visitas</th><th>Segmento</th></tr></thead>
+              <tbody id="tablaTop"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+    </div>
+  </div>
+ 
+  <script src="sistema.js"></script>
+  <script>
+    Auth.require();
+    renderUserChip();
+    initSidebar();
+ 
+    /* Tabla: top pacientes por visitas */
+    const segBadge = { 'Frecuente':'b-ok','Recurrente':'b-info','Nuevo':'b-warn','En riesgo':'b-bad' };
+    const top = DEMO.pacientes.slice().sort((a,b)=>b.visitas-a.visitas).slice(0,6);
+    document.getElementById('tablaTop').innerHTML = top.map(p => `
+      <tr>
+        <td><b>${p.nombre}</b></td>
+        <td>${p.espec}</td>
+        <td>${p.visitas}</td>
+        <td><span class="badge ${segBadge[p.seg]||'b-info'}">${p.seg}</span></td>
+      </tr>`).join('');
+ 
+    const baseOpts = { responsive:true, maintainAspectRatio:false };
+ 
+    new Chart(cRetencion, {
+      type: 'line',
+      data: {
+        labels: ['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'],
+        datasets: [{ data:[68,69,71,70,72,73,72,74,73,75,76,74],
+          borderColor: COLORS.cel, backgroundColor:'rgba(0,174,239,.10)',
+          pointBackgroundColor: COLORS.azul, tension:.35, fill:true, pointRadius:3 }]
+      },
+      options: { ...baseOpts, plugins:{legend:{display:false}},
+        scales:{ y:{min:60,max:80,grid:{color:'#eef4fa'},ticks:{font:{size:10},callback:v=>v+'%'}},
+                 x:{grid:{display:false},ticks:{font:{size:10}}} } }
+    });
+ 
+    new Chart(cSegmento, {
+      type: 'doughnut',
+      data: {
+        labels: ['Frecuentes','Recurrentes','Nuevos','En riesgo'],
+        datasets: [{ data:[1180,1620,1100,310],
+          backgroundColor:[COLORS.azul,COLORS.cel,COLORS.celClaro,'#e2574c'],
+          borderWidth:2, borderColor:'#fff' }]
+      },
+      options: { ...baseOpts, cutout:'58%',
+        plugins:{legend:{position:'bottom',labels:{font:{size:10},boxWidth:12,padding:8}}} }
+    });
+ 
+    new Chart(cSatisf, {
+      type: 'bar',
+      data: {
+        labels: ['Cardiología','Pediatría','Gineco.','Traumat.','Emergencia','Oftalmo.'],
+        datasets: [{ data:[8.9,9.1,8.7,8.2,7.9,8.8],
+          backgroundColor: COLORS.cel, borderRadius:4 }]
+      },
+      options: { ...baseOpts, indexAxis:'y', plugins:{legend:{display:false}},
+        scales:{ x:{min:0,max:10,grid:{color:'#eef4fa'},ticks:{font:{size:10}}},
+                 y:{grid:{display:false},ticks:{font:{size:10}}} } }
+    });
+  </script>
+</body>
+</html>
