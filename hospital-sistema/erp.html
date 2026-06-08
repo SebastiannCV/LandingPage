@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>ERP · Dashboard — Hospital La Caleta</title>
+  <link rel="stylesheet" href="sistema.css"/>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+  <div class="backdrop"></div>
+  <div class="app">
+
+    <!-- ===== SIDEBAR ===== -->
+    <aside class="sidebar">
+      <div class="side-brand">
+        <div class="mark">✚</div>
+        <div><h2>La Caleta</h2><span>ERP · CRM</span></div>
+      </div>
+
+      <div class="side-group">ERP — Gestión</div>
+      <a class="side-link active" href="erp.html"><span class="ic">📊</span> Dashboard</a>
+
+      <div class="side-group">CRM — Pacientes</div>
+      <a class="side-link" href="crm-email.html"><span class="ic">✉️</span> Correos</a>
+      <a class="side-link" href="crm-fidelizacion.html"><span class="ic">💙</span> Fidelización</a>
+
+      <div class="side-foot">
+        <p class="note">Datos de demostración.<br>Hospital La Caleta · Chimbote, Áncash.</p>
+      </div>
+    </aside>
+
+    <!-- ===== MAIN ===== -->
+    <div class="main">
+      <header class="topbar">
+        <div style="display:flex;align-items:center;gap:14px">
+          <button class="menu-toggle" data-menu-toggle>☰</button>
+          <div class="crumb">ERP &nbsp;/&nbsp; <b>Dashboard</b></div>
+        </div>
+        <div class="top-right">
+          <input class="search-mini" placeholder="Buscar…"/>
+          <div class="user-chip">
+            <div class="avatar" data-avatar>DG</div>
+            <div class="meta">
+              <strong data-username>Usuario</strong>
+              <span data-userrole>Rol</span>
+            </div>
+          </div>
+          <button class="logout-btn" onclick="Auth.logout()">Salir</button>
+        </div>
+      </header>
+
+      <section class="content">
+        <div class="page-head">
+          <h1>Tablero de Gestión Hospitalaria</h1>
+          <p>Indicadores operativos y de producción · Periodo 2024 (datos demostrativos)</p>
+        </div>
+
+        <!-- KPIs -->
+        <div class="kpi-grid">
+          <div class="kpi">
+            <div class="kpi-top"><div class="kpi-ic">🛏️</div><span class="kpi-trend trend-up">82%</span></div>
+            <div class="kpi-val">98 / 120</div>
+            <div class="kpi-label">Camas ocupadas</div>
+          </div>
+          <div class="kpi">
+            <div class="kpi-top"><div class="kpi-ic">🩺</div><span class="kpi-trend trend-up">+6%</span></div>
+            <div class="kpi-val">142</div>
+            <div class="kpi-label">Atenciones de hoy</div>
+          </div>
+          <div class="kpi">
+            <div class="kpi-top"><div class="kpi-ic">👩‍⚕️</div><span class="kpi-trend trend-flat">=</span></div>
+            <div class="kpi-val">87</div>
+            <div class="kpi-label">Personal en turno</div>
+          </div>
+          <div class="kpi">
+            <div class="kpi-top"><div class="kpi-ic">💊</div><span class="kpi-trend trend-down">5 bajos</span></div>
+            <div class="kpi-val">312</div>
+            <div class="kpi-label">Insumos en stock</div>
+          </div>
+        </div>
+
+        <!-- Fila gráficos 1 -->
+        <div class="grid-23">
+          <div class="card2">
+            <div class="c-head">
+              <h3>Atenciones mensuales</h3>
+              <span class="c-sub">Consulta externa + Emergencia · 2024</span>
+            </div>
+            <div class="chart-holder"><canvas id="cAtenciones"></canvas></div>
+          </div>
+          <div class="card2">
+            <div class="c-head">
+              <h3>Distribución por servicio</h3>
+              <span class="c-sub">% de atenciones</span>
+            </div>
+            <div class="chart-holder"><canvas id="cServicios"></canvas></div>
+          </div>
+        </div>
+
+        <!-- Fila gráficos 2 -->
+        <div class="grid-2">
+          <div class="card2">
+            <div class="c-head">
+              <h3>Ocupación de camas por servicio</h3>
+              <span class="c-sub">Camas usadas / total</span>
+            </div>
+            <div class="chart-holder sm"><canvas id="cCamas"></canvas></div>
+          </div>
+          <div class="card2">
+            <div class="c-head">
+              <h3>Cirugías por trimestre</h3>
+              <span class="c-sub">2022 – 2024</span>
+            </div>
+            <div class="chart-holder sm"><canvas id="cCirugias"></canvas></div>
+          </div>
+        </div>
+
+        <!-- Tabla inventario -->
+        <div class="card2">
+          <div class="c-head">
+            <h3>Inventario — Insumos críticos</h3>
+            <span class="c-sub">Almacén central · módulo de logística (ERP)</span>
+          </div>
+          <table class="tbl">
+            <thead>
+              <tr><th>Insumo</th><th>Stock actual</th><th>Nivel</th><th>Estado</th></tr>
+            </thead>
+            <tbody id="tablaInsumos"></tbody>
+          </table>
+        </div>
+      </section>
+    </div>
+  </div>
+
+  <script src="sistema.js"></script>
+  <script>
+    Auth.require();
+    renderUserChip();
+    initSidebar();
+
+    /* ---- Inventario demo ---- */
+    const insumos = [
+      { n: 'Guantes quirúrgicos (caja)', s: 420, max: 600, st: 'ok' },
+      { n: 'Mascarillas N95',            s: 85,  max: 500, st: 'bad' },
+      { n: 'Suero fisiológico 1L',       s: 210, max: 400, st: 'warn' },
+      { n: 'Jeringas 5ml',               s: 1340, max: 1500, st: 'ok' },
+      { n: 'Alcohol 70° (L)',            s: 60,  max: 300, st: 'bad' },
+      { n: 'Gasas estériles (paquete)',  s: 175, max: 350, st: 'warn' }
+    ];
+    const estados = {
+      ok:   ['b-ok','Suficiente'],
+      warn: ['b-warn','Reponer pronto'],
+      bad:  ['b-bad','Crítico']
+    };
+    document.getElementById('tablaInsumos').innerHTML = insumos.map(i => {
+      const pct = Math.round(i.s / i.max * 100);
+      const [cls, txt] = estados[i.st];
+      return `<tr>
+        <td><b>${i.n}</b></td>
+        <td>${i.s} / ${i.max}</td>
+        <td><div class="bar-mini"><i style="width:${pct}%"></i></div></td>
+        <td><span class="badge ${cls}">${txt}</span></td>
+      </tr>`;
+    }).join('');
+
+    /* ---- Gráficos ---- */
+    const baseOpts = { responsive: true, maintainAspectRatio: false };
+
+    new Chart(cAtenciones, {
+      type: 'bar',
+      data: {
+        labels: ['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'],
+        datasets: [{ data: [3200,2980,3450,3100,3600,3300,3750,3500,3200,3800,3600,3100],
+          backgroundColor: COLORS.cel, borderRadius: 4 }]
+      },
+      options: { ...baseOpts, plugins:{legend:{display:false}},
+        scales:{ y:{beginAtZero:true,grid:{color:'#eef4fa'},ticks:{font:{size:10}}},
+                 x:{grid:{display:false},ticks:{font:{size:10}}} } }
+    });
+
+    new Chart(cServicios, {
+      type: 'doughnut',
+      data: {
+        labels: ['Consulta Externa','Emergencia','Hospitalización','Cirugía','Laboratorio'],
+        datasets: [{ data: [42,25,15,10,8],
+          backgroundColor:[COLORS.azul,COLORS.cel,COLORS.celClaro,COLORS.celMin,COLORS.soft],
+          borderWidth:2, borderColor:'#fff' }]
+      },
+      options: { ...baseOpts, cutout:'58%',
+        plugins:{legend:{position:'bottom',labels:{font:{size:10},boxWidth:12,padding:8}}} }
+    });
+
+    new Chart(cCamas, {
+      type: 'bar',
+      data: {
+        labels: ['Medicina','Cirugía','Pediatría','Gineco-Obst.','UCI'],
+        datasets: [
+          { label:'Ocupadas', data:[28,22,15,18,15], backgroundColor: COLORS.azul, borderRadius:4 },
+          { label:'Total',    data:[34,28,20,22,16], backgroundColor: COLORS.celMin, borderRadius:4 }
+        ]
+      },
+      options: { ...baseOpts, plugins:{legend:{position:'bottom',labels:{font:{size:10},boxWidth:12}}},
+        scales:{ y:{beginAtZero:true,grid:{color:'#eef4fa'},ticks:{font:{size:10}}},
+                 x:{grid:{display:false},ticks:{font:{size:10}}} } }
+    });
+
+    new Chart(cCirugias, {
+      type: 'line',
+      data: {
+        labels: ['T1-22','T2-22','T3-22','T4-22','T1-23','T2-23','T3-23','T4-23','T1-24','T2-24','T3-24','T4-24'],
+        datasets: [{ data:[210,245,230,260,280,265,290,310,295,320,335,350],
+          borderColor: COLORS.cel, backgroundColor:'rgba(0,174,239,.08)',
+          pointBackgroundColor: COLORS.azul, tension:.3, fill:true, pointRadius:3 }]
+      },
+      options: { ...baseOpts, plugins:{legend:{display:false}},
+        scales:{ y:{grid:{color:'#eef4fa'},ticks:{font:{size:10}}},
+                 x:{grid:{display:false},ticks:{font:{size:9}}} } }
+    });
+  </script>
+</body>
+</html>
