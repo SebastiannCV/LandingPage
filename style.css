@@ -40,7 +40,6 @@ nav {
   gap: 10px;
 }
 
-/* Logo corregido: imagen real del hospital */
 .logo-img {
   height: 48px;
   width: auto;
@@ -172,8 +171,11 @@ nav ul a:hover { color: #fff; }
 
 .hor-icon {
   font-size: 1.8rem;
+  color: var(--cel);
   flex-shrink: 0;
   margin-top: 2px;
+  width: 36px;
+  text-align: center;
 }
 
 .horario-item h4 {
@@ -389,7 +391,6 @@ nav ul a:hover { color: #fff; }
   padding: 20px;
   border-top: 3px solid var(--cel);
   box-shadow: 0 2px 10px rgba(26,58,107,0.08);
-  /* Tamaño controlado para que no sea enorme */
   min-height: 0;
 }
 
@@ -405,7 +406,6 @@ nav ul a:hover { color: #fff; }
   margin-bottom: 12px;
 }
 
-/* Contenedor que limita la altura del canvas */
 .chart-wrap {
   position: relative;
   width: 100%;
@@ -422,11 +422,10 @@ nav ul a:hover { color: #fff; }
 
 /* ── BPM ── */
 #bpm {
-  padding: 70px 40px;
+  padding: 70px 40px 30px;
   background: #fff;
 }
 
-/* Pasos del proceso */
 .bpm-steps {
   display: flex;
   align-items: center;
@@ -480,7 +479,6 @@ nav ul a:hover { color: #fff; }
   font-weight: 700;
 }
 
-/* Diagrama completo */
 .bpm-diagram-container {
   background: var(--bg);
   border: 1.5px solid var(--cel2);
@@ -544,7 +542,6 @@ nav ul a:hover { color: #fff; }
   text-align: center;
 }
 
-/* Modal pantalla completa */
 .bpm-modal {
   display: none;
   position: fixed;
@@ -597,7 +594,7 @@ nav ul a:hover { color: #fff; }
 
 /* ── MAPA ── */
 #mapa {
-  padding: 70px 40px;
+  padding: 30px 40px;
   background: var(--bg);
 }
 
@@ -634,8 +631,11 @@ nav ul a:hover { color: #fff; }
 
 .mapa-icono {
   font-size: 1.3rem;
+  color: var(--cel);
   flex-shrink: 0;
   margin-top: 2px;
+  width: 24px;
+  text-align: center;
 }
 
 .mapa-dato strong {
@@ -866,20 +866,17 @@ footer {
 
   .espec-grid { grid-template-columns: 1fr 1fr; }
 
-  /* Dashboard: una columna en móvil, altura reducida */
   .dashboard-grid { grid-template-columns: 1fr; gap: 16px; }
   #dashboard { padding: 40px 16px; }
   .chart-wrap { height: 180px; }
   .chart-wrap--donut { height: 200px; }
 
-  /* BPM */
-  #bpm { padding: 40px 16px; }
+  #bpm { padding: 40px 16px 20px; }
   .bpm-steps { gap: 6px; }
   .bpm-step { min-width: 120px; padding: 10px 12px; }
   .bpm-arrow { display: none; }
 
-  /* Mapa */
-  #mapa { padding: 40px 16px; }
+  #mapa { padding: 20px 16px; }
   .mapa-container { grid-template-columns: 1fr; }
   .mapa-container iframe { height: 280px; min-height: 0; }
   .mapa-info { padding: 20px 16px; gap: 16px; }
