@@ -296,20 +296,53 @@
       </div>
     </div>
 
+    <!-- Explicación del BPM -->
+    <div class="bpm-explicacion">
+      <div class="bpm-exp-grid">
+        <div class="bpm-exp-item">
+          <div class="bpm-exp-icon"><i class="fas fa-info-circle"></i></div>
+          <div>
+            <h5>¿Qué es un BPM?</h5>
+            <p>Un diagrama BPM (Business Process Model) representa visualmente el flujo de actividades de un proceso. Permite identificar responsables, decisiones y secuencia de tareas de forma clara y ordenada.</p>
+          </div>
+        </div>
+        <div class="bpm-exp-item">
+          <div class="bpm-exp-icon"><i class="fas fa-calendar-check"></i></div>
+          <div>
+            <h5>Proceso de Cita Médica</h5>
+            <p>Este diagrama muestra cómo un paciente solicita una cita en el Hospital La Caleta: desde la solicitud inicial hasta recibir su número de turno y confirmación de atención médica.</p>
+          </div>
+        </div>
+        <div class="bpm-exp-item">
+          <div class="bpm-exp-icon"><i class="fas fa-users-cog"></i></div>
+          <div>
+            <h5>Áreas involucradas</h5>
+            <p>Intervienen 4 actores: <strong>Admisión/Estadística</strong> (verifica disponibilidad y registra), <strong>Paciente</strong> (solicita y elige horario), <strong>Enfermería</strong> (triaje y signos vitales) y <strong>Médico</strong> (consulta y diagnóstico).</p>
+          </div>
+        </div>
+        <div class="bpm-exp-item">
+          <div class="bpm-exp-icon"><i class="fas fa-code-branch"></i></div>
+          <div>
+            <h5>Decisiones clave</h5>
+            <p>El proceso incluye dos puntos de decisión: si hay <strong>cupo disponible</strong> y si el paciente está <strong>afiliado al SIS</strong> (atención gratuita) o debe pagar tarifa particular en caja.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <!-- Diagrama BPM completo -->
     <div class="bpm-diagram-container">
       <div class="bpm-diagram-header">
-        <span class="bpm-tag">&#128196; Diagrama BPM — Flujo Completo</span>
+        <span class="bpm-tag"><i class="fas fa-project-diagram"></i> Diagrama BPM — Flujo Completo</span>
         <button class="bpm-zoom-btn" onclick="toggleBPMZoom()" id="bpmZoomBtn">
-          &#128269; Ver en pantalla completa
+          <i class="fas fa-expand"></i> Ver en pantalla completa
         </button>
       </div>
       <div class="bpm-img-wrap" id="bpmImgWrap">
         <img src="BPM-Caleta.jpg" alt="Diagrama BPM - Proceso de Cita Médica Hospital La Caleta" class="bpm-img" id="bpmImg"/>
       </div>
       <p class="bpm-note">
-        &#9432; Toca la imagen para ampliar. El diagrama muestra los flujos entre las áreas de
-        Admisión – Estadística e Informática, el Paciente, Enfermería y el Médico.
+        <i class="fas fa-hand-pointer"></i> Haz clic en la imagen para ampliarla a pantalla completa.
       </p>
     </div>
 

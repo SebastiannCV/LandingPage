@@ -520,19 +520,62 @@ nav ul a:hover { color: #fff; }
   overflow-x: auto;
   cursor: zoom-in;
   padding: 20px;
+  text-align: center;
 }
 
 .bpm-img {
-  width: 100%;
-  min-width: 600px;
+  width: 70%;
+  max-width: 750px;
+  min-width: 300px;
   height: auto;
-  display: block;
+  display: inline-block;
   border-radius: 4px;
   box-shadow: 0 2px 16px rgba(26,58,107,0.12);
   transition: transform 0.2s;
 }
 
-.bpm-img:hover { transform: scale(1.01); }
+.bpm-img:hover { transform: scale(1.02); }
+
+/* Explicación BPM */
+.bpm-explicacion {
+  margin-bottom: 30px;
+}
+
+.bpm-exp-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+.bpm-exp-item {
+  display: flex;
+  gap: 14px;
+  align-items: flex-start;
+  background: var(--bg);
+  border-left: 3px solid var(--cel);
+  border-radius: 0 6px 6px 0;
+  padding: 16px 18px;
+}
+
+.bpm-exp-icon {
+  font-size: 1.4rem;
+  color: var(--cel);
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.bpm-exp-item h5 {
+  font-size: 0.9rem;
+  color: var(--azul);
+  font-weight: 700;
+  margin-bottom: 5px;
+}
+
+.bpm-exp-item p {
+  font-size: 0.82rem;
+  color: var(--gris-txt);
+  line-height: 1.6;
+}
 
 .bpm-note {
   font-size: 0.78rem;
@@ -875,6 +918,8 @@ footer {
   .bpm-steps { gap: 6px; }
   .bpm-step { min-width: 120px; padding: 10px 12px; }
   .bpm-arrow { display: none; }
+  .bpm-exp-grid { grid-template-columns: 1fr; }
+  .bpm-img { width: 100%; }
 
   #mapa { padding: 20px 16px; }
   .mapa-container { grid-template-columns: 1fr; }
