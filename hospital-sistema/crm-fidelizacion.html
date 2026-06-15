@@ -6,11 +6,21 @@
   <title>CRM · Fidelización — Hospital La Caleta</title>
   <link rel="stylesheet" href="sistema.css"/>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    .empty-msg {
+      display:flex; align-items:center; justify-content:center; height:100%;
+      color:var(--muted); font-size:.85rem; text-align:center; padding:20px;
+    }
+    .demo-tag {
+      font-size:.64rem; font-weight:700; padding:2px 8px; border-radius:20px;
+      background:var(--warn-bg); color:var(--warn); margin-left:6px; vertical-align:middle;
+    }
+  </style>
 </head>
 <body>
   <div class="backdrop"></div>
   <div class="app">
- 
+
     <!-- ===== SIDEBAR ===== -->
     <aside class="sidebar">
       <div class="side-brand">
@@ -18,15 +28,17 @@
         <div><h2>La Caleta</h2><span>ERP · CRM</span></div>
       </div>
       <div class="side-group">ERP — Gestión</div>
-      <a class="side-link" href="erp.html"><span class="ic">📊</span> Dashboard</a>
+      <a class="side-link" id="linkDashboard" href="erp.html"><span class="ic">📊</span> Dashboard</a>
       <div class="side-group">CRM — Pacientes</div>
       <a class="side-link" href="crm-email.html"><span class="ic">✉️</span> Correos</a>
       <a class="side-link active" href="crm-fidelizacion.html"><span class="ic">💙</span> Fidelización</a>
+      <a class="side-link" href="crm-encuesta.html"><span class="ic">📋</span> Encuesta</a>
+      <a class="side-link" href="crm-pacientes.html"><span class="ic">👤</span> Pacientes</a>
       <div class="side-foot">
         <p class="note">Datos de demostración.<br>Hospital La Caleta · Chimbote, Áncash.</p>
       </div>
     </aside>
- 
+
     <!-- ===== MAIN ===== -->
     <div class="main">
       <header class="topbar">
@@ -43,134 +55,185 @@
           <button class="logout-btn" onclick="Auth.logout()">Salir</button>
         </div>
       </header>
- 
+
       <section class="content">
         <div class="page-head">
           <h1>Tablero de Fidelización — CRM</h1>
-          <p>Relación con el paciente: retención, satisfacción y segmentación (datos demostrativos)</p>
+          <p>Relación con el paciente: satisfacción y segmentación. Las tarjetas en vivo usan los datos reales de Encuesta y Pacientes.</p>
         </div>
- 
+
         <!-- KPIs -->
         <div class="kpi-grid">
           <div class="kpi">
-            <div class="kpi-top"><div class="kpi-ic">👥</div><span class="kpi-trend trend-up">+8%</span></div>
-            <div class="kpi-val">4 210</div>
-            <div class="kpi-label">Pacientes activos</div>
+            <div class="kpi-top"><div class="kpi-ic">👥</div></div>
+            <div class="kpi-val" id="kActivos">0</div>
+            <div class="kpi-label">Pacientes registrados</div>
           </div>
           <div class="kpi">
-            <div class="kpi-top"><div class="kpi-ic">🔁</div><span class="kpi-trend trend-up">+3%</span></div>
-            <div class="kpi-val">74%</div>
-            <div class="kpi-label">Tasa de retención</div>
+            <div class="kpi-top"><div class="kpi-ic">⭐</div></div>
+            <div class="kpi-val" id="kSatisf">—</div>
+            <div class="kpi-label">Satisfacción promedio (de 5)</div>
           </div>
           <div class="kpi">
-            <div class="kpi-top"><div class="kpi-ic">⭐</div><span class="kpi-trend trend-up">Bueno</span></div>
-            <div class="kpi-val">8.6</div>
-            <div class="kpi-label">Satisfacción (de 10)</div>
+            <div class="kpi-top"><div class="kpi-ic">👍</div></div>
+            <div class="kpi-val" id="kRecom">0%</div>
+            <div class="kpi-label">Recomendaría el hospital</div>
           </div>
           <div class="kpi">
-            <div class="kpi-top"><div class="kpi-ic">⚠️</div><span class="kpi-trend trend-down">en riesgo</span></div>
-            <div class="kpi-val">312</div>
-            <div class="kpi-label">Pacientes inactivos</div>
+            <div class="kpi-top"><div class="kpi-ic">🆕</div></div>
+            <div class="kpi-val" id="kNuevos">0</div>
+            <div class="kpi-label">Pacientes nuevos</div>
           </div>
         </div>
- 
+
         <!-- Gráficos -->
         <div class="grid-23">
           <div class="card2">
             <div class="c-head">
-              <h3>Retención mensual</h3>
-              <span class="c-sub">% de pacientes que regresan · 2024</span>
+              <h3>Satisfacción por aspecto</h3>
+              <span class="c-sub">Promedio real de las encuestas (de 5)</span>
             </div>
-            <div class="chart-holder"><canvas id="cRetencion"></canvas></div>
+            <div class="chart-holder"><canvas id="cAspectos"></canvas><div class="empty-msg" id="emptyAspectos" style="display:none">Aún no hay encuestas registradas.<br>Responda la encuesta para ver resultados aquí.</div></div>
           </div>
           <div class="card2">
             <div class="c-head">
               <h3>Segmentación de pacientes</h3>
-              <span class="c-sub">Por nivel de fidelidad</span>
+              <span class="c-sub">Nuevos vs. existentes</span>
             </div>
-            <div class="chart-holder"><canvas id="cSegmento"></canvas></div>
+            <div class="chart-holder"><canvas id="cSegmento"></canvas><div class="empty-msg" id="emptySegmento" style="display:none">Aún no hay pacientes registrados.</div></div>
           </div>
         </div>
- 
+
         <div class="grid-2">
           <div class="card2">
             <div class="c-head">
-              <h3>Satisfacción por servicio</h3>
-              <span class="c-sub">Encuestas post-atención (de 10)</span>
+              <h3>Recomendación de pacientes</h3>
+              <span class="c-sub">¿Recomendaría el hospital? (encuestas)</span>
             </div>
-            <div class="chart-holder sm"><canvas id="cSatisf"></canvas></div>
+            <div class="chart-holder sm"><canvas id="cRecom"></canvas><div class="empty-msg" id="emptyRecom" style="display:none">Aún no hay encuestas registradas.</div></div>
           </div>
- 
+
           <div class="card2">
             <div class="c-head">
-              <h3>Pacientes más frecuentes</h3>
-              <span class="c-sub">Top por número de visitas</span>
+              <h3>Pacientes por especialidad</h3>
+              <span class="c-sub">Registrados en el sistema</span>
             </div>
             <table class="tbl">
-              <thead><tr><th>Paciente</th><th>Especialidad</th><th>Visitas</th><th>Segmento</th></tr></thead>
-              <tbody id="tablaTop"></tbody>
+              <thead><tr><th>Especialidad</th><th>Pacientes</th><th>Distribución</th></tr></thead>
+              <tbody id="tablaEspec"></tbody>
             </table>
           </div>
         </div>
       </section>
     </div>
   </div>
- 
+
   <script src="sistema.js"></script>
   <script>
     Auth.require();
     renderUserChip();
     initSidebar();
- 
-    /* Tabla: top pacientes por visitas */
-    const segBadge = { 'Frecuente':'b-ok','Recurrente':'b-info','Nuevo':'b-warn','En riesgo':'b-bad' };
-    const top = DEMO.pacientes.slice().sort((a,b)=>b.visitas-a.visitas).slice(0,6);
-    document.getElementById('tablaTop').innerHTML = top.map(p => `
-      <tr>
-        <td><b>${p.nombre}</b></td>
-        <td>${p.espec}</td>
-        <td>${p.visitas}</td>
-        <td><span class="badge ${segBadge[p.seg]||'b-info'}">${p.seg}</span></td>
-      </tr>`).join('');
- 
+
+    /* Ocultar enlace al Dashboard ERP si el usuario no es Administrador */
+    (function ocultarDashboardSiNoAdmin(){
+      const s = Auth.current();
+      if (!s || s.rol !== 'Administrador') {
+        const l = document.getElementById('linkDashboard');
+        if (l) l.style.display = 'none';
+      }
+    })();
+
+    /* ===== Leer datos reales guardados ===== */
+    let pacientes = [];
+    try { pacientes = JSON.parse(Store.get('lc_pacientes')) || []; } catch(e) { pacientes = []; }
+    let encuestas = [];
+    try { encuestas = JSON.parse(Store.get('lc_encuestas')) || []; } catch(e) { encuestas = []; }
+
+    /* ===== KPIs ===== */
+    const nuevos = pacientes.filter(p => p.nuevo).length;
+    document.getElementById('kActivos').textContent = pacientes.length;
+    document.getElementById('kNuevos').textContent = nuevos;
+
+    if (encuestas.length) {
+      const promGeneral = encuestas.reduce((s,e) =>
+        s + (e.general + e.espera + e.trato + e.limpieza + e.info) / 5, 0) / encuestas.length;
+      document.getElementById('kSatisf').textContent = promGeneral.toFixed(1);
+      const recom = Math.round(encuestas.filter(e => e.recomienda).length / encuestas.length * 100);
+      document.getElementById('kRecom').textContent = recom + '%';
+    }
+
     const baseOpts = { responsive:true, maintainAspectRatio:false };
- 
-    new Chart(cRetencion, {
-      type: 'line',
-      data: {
-        labels: ['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'],
-        datasets: [{ data:[68,69,71,70,72,73,72,74,73,75,76,74],
-          borderColor: COLORS.cel, backgroundColor:'rgba(0,174,239,.10)',
-          pointBackgroundColor: COLORS.azul, tension:.35, fill:true, pointRadius:3 }]
-      },
-      options: { ...baseOpts, plugins:{legend:{display:false}},
-        scales:{ y:{min:60,max:80,grid:{color:'#eef4fa'},ticks:{font:{size:10},callback:v=>v+'%'}},
-                 x:{grid:{display:false},ticks:{font:{size:10}}} } }
-    });
- 
-    new Chart(cSegmento, {
-      type: 'doughnut',
-      data: {
-        labels: ['Frecuentes','Recurrentes','Nuevos','En riesgo'],
-        datasets: [{ data:[1180,1620,1100,310],
-          backgroundColor:[COLORS.azul,COLORS.cel,COLORS.celClaro,'#e2574c'],
-          borderWidth:2, borderColor:'#fff' }]
-      },
-      options: { ...baseOpts, cutout:'58%',
-        plugins:{legend:{position:'bottom',labels:{font:{size:10},boxWidth:12,padding:8}}} }
-    });
- 
-    new Chart(cSatisf, {
-      type: 'bar',
-      data: {
-        labels: ['Cardiología','Pediatría','Gineco.','Traumat.','Emergencia','Oftalmo.'],
-        datasets: [{ data:[8.9,9.1,8.7,8.2,7.9,8.8],
-          backgroundColor: COLORS.cel, borderRadius:4 }]
-      },
-      options: { ...baseOpts, indexAxis:'y', plugins:{legend:{display:false}},
-        scales:{ x:{min:0,max:10,grid:{color:'#eef4fa'},ticks:{font:{size:10}}},
-                 y:{grid:{display:false},ticks:{font:{size:10}}} } }
-    });
+
+    /* ===== Gráfico 1: Satisfacción por aspecto (encuestas reales) ===== */
+    if (encuestas.length) {
+      const aspectos = ['general','espera','trato','limpieza','info'];
+      const etiquetas = ['Atención general','Tiempo de espera','Trato del personal','Limpieza','Claridad de info'];
+      const prom = aspectos.map(a =>
+        +(encuestas.reduce((s,e)=>s+e[a],0) / encuestas.length).toFixed(2));
+      new Chart(cAspectos, {
+        type: 'bar',
+        data: { labels: etiquetas, datasets: [{ data: prom, backgroundColor: COLORS.cel, borderRadius:4 }] },
+        options: { ...baseOpts, indexAxis:'y', plugins:{legend:{display:false}},
+          scales:{ x:{min:0,max:5,grid:{color:'#eef4fa'},ticks:{stepSize:1,font:{size:10}}},
+                   y:{grid:{display:false},ticks:{font:{size:10}}} } }
+      });
+    } else {
+      document.getElementById('cAspectos').style.display = 'none';
+      document.getElementById('emptyAspectos').style.display = 'flex';
+    }
+
+    /* ===== Gráfico 2: Segmentación nuevos vs existentes ===== */
+    if (pacientes.length) {
+      const existentes = pacientes.length - nuevos;
+      new Chart(cSegmento, {
+        type: 'doughnut',
+        data: {
+          labels: ['Nuevos (registrados por usted)','Existentes (base inicial)'],
+          datasets: [{ data:[nuevos, existentes],
+            backgroundColor:[COLORS.cel, COLORS.azul], borderWidth:2, borderColor:'#fff' }]
+        },
+        options: { ...baseOpts, cutout:'58%',
+          plugins:{legend:{position:'bottom',labels:{font:{size:10},boxWidth:12,padding:8}}} }
+      });
+    } else {
+      document.getElementById('cSegmento').style.display = 'none';
+      document.getElementById('emptySegmento').style.display = 'flex';
+    }
+
+    /* ===== Gráfico 3: Recomendación (encuestas reales) ===== */
+    if (encuestas.length) {
+      const si = encuestas.filter(e => e.recomienda).length;
+      const no = encuestas.length - si;
+      new Chart(cRecom, {
+        type: 'doughnut',
+        data: {
+          labels: ['Sí recomendaría','No recomendaría'],
+          datasets: [{ data:[si, no], backgroundColor:[COLORS.cel, '#e2574c'], borderWidth:2, borderColor:'#fff' }]
+        },
+        options: { ...baseOpts, cutout:'58%',
+          plugins:{legend:{position:'bottom',labels:{font:{size:10},boxWidth:12,padding:8}}} }
+      });
+    } else {
+      document.getElementById('cRecom').style.display = 'none';
+      document.getElementById('emptyRecom').style.display = 'flex';
+    }
+
+    /* ===== Tabla: pacientes por especialidad ===== */
+    const tbody = document.getElementById('tablaEspec');
+    if (pacientes.length) {
+      const conteo = {};
+      pacientes.forEach(p => { conteo[p.espec] = (conteo[p.espec] || 0) + 1; });
+      const filas = Object.entries(conteo).sort((a,b) => b[1]-a[1]);
+      const maxV = filas[0][1];
+      tbody.innerHTML = filas.map(([esp, n]) => `
+        <tr>
+          <td><b>${esp}</b></td>
+          <td>${n}</td>
+          <td><div class="bar-mini"><i style="width:${Math.round(n/maxV*100)}%"></i></div></td>
+        </tr>`).join('');
+    } else {
+      tbody.innerHTML = '<tr><td colspan="3" style="color:var(--muted);padding:16px">Aún no hay pacientes registrados.</td></tr>';
+    }
   </script>
 </body>
 </html>
