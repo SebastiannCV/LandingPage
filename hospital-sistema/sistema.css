@@ -372,3 +372,17 @@ table.tbl tr:hover td { background: #f7fafd; }
   display: none; position: fixed; inset: 0; background: rgba(14,34,65,.45); z-index: 40;
 }
 .backdrop.show { display: block; }
+
+/* =====================================================
+   LOGO en el cuadro de marca del sidebar (en vez de ✚)
+   ===================================================== */
+.side-brand .mark {
+  background-color: #fff;
+  background-image: url('logo.png');
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  border-color: rgba(255,255,255,.35);
+  color: transparent;
+  font-size: 0;
+}

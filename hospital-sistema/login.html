@@ -5,19 +5,35 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Acceso al Sistema — Hospital La Caleta</title>
   <link rel="stylesheet" href="sistema.css"/>
+  <style>
+    /* Logo dentro del cuadro de marca, en vez del símbolo ✚ */
+    .brand-mark.brand-logo {
+      background: #fff;
+      padding: 6px;
+      overflow: hidden;
+    }
+    .brand-mark.brand-logo img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      display: block;
+    }
+  </style>
 </head>
 <body class="login-body">
- 
+
   <!-- Marca / lado izquierdo -->
   <aside class="login-brand">
     <div class="brand-top">
-      <div class="brand-mark">✚</div>
+      <div class="brand-mark brand-logo">
+        <img src="logo.png" alt="Logo Hospital La Caleta"/>
+      </div>
       <div>
         <h2>Hospital La Caleta</h2>
         <span>Sistema ERP · CRM</span>
       </div>
     </div>
- 
+
     <div class="brand-hero">
       <h1>Gestión integral <em>en un solo lugar</em></h1>
       <p>
@@ -32,19 +48,19 @@
         <div class="brand-feat"><span class="dot">💙</span> CRM — Tablero de fidelización</div>
       </div>
     </div>
- 
+
     <p class="brand-foot">
       Categoría II-2 · MINSA · Gobierno Regional de Áncash · Chimbote, prov. Santa
     </p>
   </aside>
- 
+
   <!-- Formulario / lado derecho -->
   <main class="login-form-wrap">
     <div class="login-card">
       <span class="eyebrow">Bienvenido</span>
       <h3>Iniciar sesión</h3>
       <p class="sub">Ingrese sus credenciales para acceder a los módulos.</p>
- 
+
       <div class="field">
         <label for="user">Usuario</label>
         <input type="text" id="user" placeholder="admin" autocomplete="username"/>
@@ -53,22 +69,22 @@
         <label for="pass">Contraseña</label>
         <input type="password" id="pass" placeholder="••••••" autocomplete="current-password"/>
       </div>
- 
+
       <button class="btn-full" id="btnLogin">Ingresar al sistema</button>
       <div class="login-error" id="err">Usuario o contraseña incorrectos.</div>
-      
+
     </div>
   </main>
- 
+
   <script src="sistema.js"></script>
   <script>
     // Si ya hay sesión activa, ir directo al panel
     if (Auth.current()) window.location.href = 'erp.html';
- 
+
     const u = document.getElementById('user');
     const p = document.getElementById('pass');
     const err = document.getElementById('err');
- 
+
     function intentar() {
       if (Auth.login(u.value, p.value)) {
         window.location.href = 'erp.html';
@@ -78,7 +94,7 @@
         p.focus();
       }
     }
- 
+
     document.getElementById('btnLogin').addEventListener('click', intentar);
     [u, p].forEach(el => el.addEventListener('keydown', e => {
       if (e.key === 'Enter') intentar();
