@@ -97,18 +97,6 @@ function toast(msg) {
    DATOS DE DEMOSTRACIÓN (no reales)
    ===================================================== */
 const DEMO = {
-  /* Pacientes para el CRM */
-  pacientes: [
-    { nombre: 'Rosa Medina Vega',     email: 'rosa.medina@correo.pe',    espec: 'Cardiología',    visitas: 9, seg: 'Frecuente' },
-    { nombre: 'Carlos Ríos Pajuelo',  email: 'crios@correo.pe',          espec: 'Traumatología',  visitas: 2, seg: 'Nuevo' },
-    { nombre: 'Lucía Flores Ari',     email: 'lucia.flores@correo.pe',   espec: 'Pediatría',      visitas: 6, seg: 'Frecuente' },
-    { nombre: 'Jorge Salinas Cruz',   email: 'jsalinas@correo.pe',       espec: 'Gastroenterología', visitas: 1, seg: 'En riesgo' },
-    { nombre: 'Ana Príncipe León',    email: 'aprincipe@correo.pe',      espec: 'Ginecología',    visitas: 4, seg: 'Recurrente' },
-    { nombre: 'Pedro Castro Díaz',    email: 'pcastro@correo.pe',        espec: 'Neurología',     visitas: 3, seg: 'Recurrente' },
-    { nombre: 'Elena Vargas Mau',     email: 'evargas@correo.pe',        espec: 'Oftalmología',   visitas: 7, seg: 'Frecuente' },
-    { nombre: 'Miguel Tafur Ñope',    email: 'mtafur@correo.pe',         espec: 'Oncología',      visitas: 1, seg: 'En riesgo' }
-  ],
-
   /* Plantillas de correo del CRM */
   plantillas: {
     'Recordatorio de cita':

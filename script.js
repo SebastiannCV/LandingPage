@@ -8,7 +8,7 @@ window.addEventListener('scroll', () => {
 
 // ── Animación al aparecer elementos ──
 const items = document.querySelectorAll(
-  '.card, .chart-box, .espec-item, .horario-item, .barra-item, .bpm-step, .mapa-dato'
+  '.card, .chart-box, .horario-item, .barra-item, .mapa-dato'
 );
 const observer = new IntersectionObserver((entries) => {
   entries.forEach(entry => {
@@ -52,7 +52,7 @@ function toggleBPMZoom() {
 
 // Cerrar modal con tecla Escape
 document.addEventListener('keydown', (e) => {
-  if (e.key === 'Escape') closeBPMModal();
+  if (e.key === 'Escape') { closeBPMModal(); closeCarteraModal(); closeProcesosModal(); }
 });
 
 // ── Colores para gráficos ──
@@ -183,3 +183,27 @@ new Chart(document.getElementById('chartCirugias'), {
     }
   }
 });
+
+// ── Cartera de Servicios: modal ──
+function openCarteraModal() {
+  const m = document.getElementById('carteraModal');
+  if (m) m.classList.add('active');
+  document.body.style.overflow = 'hidden';
+}
+function closeCarteraModal() {
+  const m = document.getElementById('carteraModal');
+  if (m) m.classList.remove('active');
+  document.body.style.overflow = '';
+}
+
+// ── Procesos (BPM): modal ──
+function openProcesosModal() {
+  const m = document.getElementById('procesosModal');
+  if (m) m.classList.add('active');
+  document.body.style.overflow = 'hidden';
+}
+function closeProcesosModal() {
+  const m = document.getElementById('procesosModal');
+  if (m) m.classList.remove('active');
+  document.body.style.overflow = '';
+}
