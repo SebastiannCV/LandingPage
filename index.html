@@ -18,12 +18,15 @@
     </div>
     <ul>
       <li><a href="#servicios">Servicios</a></li>
-      <li><a href="#especialidades">Especialidades</a></li>
+      <li><li><a href="#" onclick="openCarteraModal(); return false;">Cartera de Servicios</a></li></li>
       <li><a href="#nosotros">Nosotros</a></li>
       <li><a href="#dashboard">Estadísticas</a></li>
-      <li><a href="#bpm">Procesos</a></li>
+      <li><a href="#" onclick="openProcesosModal(); return false;">Procesos</a></li>
       <li><a href="#contacto">Contacto</a></li>
     </ul>
+    <a href="hospital-sistema/login.html" class="btn-acceso">
+      <i class="fas fa-right-to-bracket"></i> Acceso al sistema
+    </a>
   </nav>
 
   <!-- HERO -->
@@ -36,8 +39,6 @@
         especializados preventivos, promocionales, recuperativos y de
         rehabilitación para la población de Chimbote y la región Áncash.
       </p>
-      <a href="#servicios" class="btn">Ver Servicios</a>
-      <a href="#dashboard" class="btn btn-outline">Ver Estadísticas</a>
     </div>
   </section>
 
@@ -154,60 +155,14 @@
     </div>
   </section>
 
-  <!-- ESPECIALIDADES -->
-  <section id="especialidades">
-    <div class="section-header">
-      <span class="label">Especialidades</span>
-      <h2>Áreas <span class="celeste">Médicas</span></h2>
-      <p class="intro">
-        Contamos con más de 20 especialidades médicas para atender todas
-        las necesidades de salud de nuestra población.
-      </p>
-    </div>
-    <div class="espec-grid">
-      <div class="espec-item">
-        <h4>Cardiología</h4>
-        <p>Diagnóstico y tratamiento de enfermedades del corazón.</p>
-      </div>
-      <div class="espec-item">
-        <h4>Pediatría</h4>
-        <p>Atención integral de salud para niños y adolescentes.</p>
-      </div>
-      <div class="espec-item">
-        <h4>Ginecología</h4>
-        <p>Salud femenina, control prenatal y atención al parto.</p>
-      </div>
-      <div class="espec-item">
-        <h4>Traumatología</h4>
-        <p>Lesiones del sistema músculo-esquelético y fracturas.</p>
-      </div>
-      <div class="espec-item">
-        <h4>Neurología</h4>
-        <p>Enfermedades del sistema nervioso central y periférico.</p>
-      </div>
-      <div class="espec-item">
-        <h4>Oftalmología</h4>
-        <p>Diagnóstico y cirugía de enfermedades oculares.</p>
-      </div>
-      <div class="espec-item">
-        <h4>Gastroenterología</h4>
-        <p>Patologías del aparato digestivo y hepático.</p>
-      </div>
-      <div class="espec-item">
-        <h4>Oncología</h4>
-        <p>Diagnóstico y tratamiento de enfermedades oncológicas.</p>
-      </div>
-    </div>
-  </section>
-
   <!-- DASHBOARD -->
   <section id="dashboard">
     <div class="section-header">
       <span class="label">Datos 2024</span>
       <h2>Estadísticas del <span class="celeste">Hospital</span></h2>
       <p class="intro">
-        Indicadores de atención y producción hospitalaria basados en el
-        historial del establecimiento y datos referenciales del sector salud.
+        Indicadores de atención y producción hospitalaria. Las cifras mostradas
+        son ilustrativas, con fines demostrativos del proyecto.
       </p>
     </div>
     <div class="dashboard-grid">
@@ -238,119 +193,6 @@
         <div class="chart-wrap">
           <canvas id="chartCirugias"></canvas>
         </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- BPM - PROCESO DE CITA MÉDICA -->
-  <section id="bpm">
-    <div class="section-header">
-      <span class="label">Gestión de Procesos</span>
-      <h2>Proceso de <span class="celeste">Cita Médica</span></h2>
-      <p class="intro">
-        Diagrama BPM del proceso de reserva de cita médica en el Hospital La Caleta,
-        que muestra los flujos entre el paciente, admisión, enfermería y el médico.
-      </p>
-    </div>
-
-    <!-- Pasos visuales del proceso -->
-    <div class="bpm-steps">
-      <div class="bpm-step">
-        <div class="bpm-step-num">1</div>
-        <div class="bpm-step-info">
-          <h5>Solicitud</h5>
-          <p>Presencial, telefónica o web</p>
-        </div>
-      </div>
-      <div class="bpm-arrow">&#8594;</div>
-      <div class="bpm-step">
-        <div class="bpm-step-num">2</div>
-        <div class="bpm-step-info">
-          <h5>Admisión</h5>
-          <p>Verificación y registro del paciente</p>
-        </div>
-      </div>
-      <div class="bpm-arrow">&#8594;</div>
-      <div class="bpm-step">
-        <div class="bpm-step-num">3</div>
-        <div class="bpm-step-info">
-          <h5>Ticket</h5>
-          <p>Generación de número de turno</p>
-        </div>
-      </div>
-      <div class="bpm-arrow">&#8594;</div>
-      <div class="bpm-step">
-        <div class="bpm-step-num">4</div>
-        <div class="bpm-step-info">
-          <h5>Enfermería</h5>
-          <p>Triaje y signos vitales</p>
-        </div>
-      </div>
-      <div class="bpm-arrow">&#8594;</div>
-      <div class="bpm-step">
-        <div class="bpm-step-num">5</div>
-        <div class="bpm-step-info">
-          <h5>Consulta</h5>
-          <p>Evaluación y diagnóstico médico</p>
-        </div>
-      </div>
-    </div>
-
-    <!-- Explicación del BPM -->
-    <div class="bpm-explicacion">
-      <div class="bpm-exp-grid">
-        <div class="bpm-exp-item">
-          <div class="bpm-exp-icon"><i class="fas fa-info-circle"></i></div>
-          <div>
-            <h5>¿Qué es un BPM?</h5>
-            <p>Un diagrama BPM (Business Process Model) representa visualmente el flujo de actividades de un proceso. Permite identificar responsables, decisiones y secuencia de tareas de forma clara y ordenada.</p>
-          </div>
-        </div>
-        <div class="bpm-exp-item">
-          <div class="bpm-exp-icon"><i class="fas fa-calendar-check"></i></div>
-          <div>
-            <h5>Proceso de Cita Médica</h5>
-            <p>Este diagrama muestra cómo un paciente solicita una cita en el Hospital La Caleta: desde la solicitud inicial hasta recibir su número de turno y confirmación de atención médica.</p>
-          </div>
-        </div>
-        <div class="bpm-exp-item">
-          <div class="bpm-exp-icon"><i class="fas fa-users-cog"></i></div>
-          <div>
-            <h5>Áreas involucradas</h5>
-            <p>Intervienen 4 actores: <strong>Admisión/Estadística</strong> (verifica disponibilidad y registra), <strong>Paciente</strong> (solicita y elige horario), <strong>Enfermería</strong> (triaje y signos vitales) y <strong>Médico</strong> (consulta y diagnóstico).</p>
-          </div>
-        </div>
-        <div class="bpm-exp-item">
-          <div class="bpm-exp-icon"><i class="fas fa-code-branch"></i></div>
-          <div>
-            <h5>Decisiones clave</h5>
-            <p>El proceso incluye dos puntos de decisión: si hay <strong>cupo disponible</strong> y si el paciente está <strong>afiliado al SIS</strong> (atención gratuita) o debe pagar tarifa particular en caja.</p>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Diagrama BPM completo -->
-    <div class="bpm-diagram-container">
-      <div class="bpm-diagram-header">
-        <span class="bpm-tag"><i class="fas fa-project-diagram"></i> Diagrama BPM — Flujo Completo</span>
-        <button class="bpm-zoom-btn" onclick="toggleBPMZoom()" id="bpmZoomBtn">
-          <i class="fas fa-expand"></i> Ver en pantalla completa
-        </button>
-      </div>
-      <div class="bpm-img-wrap" id="bpmImgWrap">
-        <img src="BPM-Caleta.jpg" alt="Diagrama BPM - Proceso de Cita Médica Hospital La Caleta" class="bpm-img" id="bpmImg"/>
-      </div>
-      <p class="bpm-note">
-        <i class="fas fa-hand-pointer"></i> Haz clic en la imagen para ampliarla a pantalla completa.
-      </p>
-    </div>
-
-    <!-- Modal para pantalla completa -->
-    <div class="bpm-modal" id="bpmModal" onclick="closeBPMModal()">
-      <div class="bpm-modal-content" onclick="event.stopPropagation()">
-        <button class="bpm-modal-close" onclick="closeBPMModal()">&#10005;</button>
-        <img src="BPM-Caleta.jpg" alt="Diagrama BPM Hospital La Caleta" class="bpm-modal-img"/>
       </div>
     </div>
   </section>
@@ -440,8 +282,6 @@
         <p>Centro hospitalario público de Segundo Nivel II-2 que ofrece servicios especializados en salud, administrado por el Gobierno Regional de Áncash, ubicado en el distrito de Chimbote, provincia del Santa.</p>
         <div class="footer-social">
           <a href="https://www.facebook.com/HospitalLaCaletaoficial" target="_blank" rel="noopener" class="social-btn" aria-label="Facebook">f</a>
-          <div class="social-btn">t</div>
-          <div class="social-btn">in</div>
         </div>
       </div>
 
@@ -449,14 +289,14 @@
         <h3>Enlaces de Interés</h3>
         <div class="subline"></div>
         <div class="links-doble">
-          <div class="link-item"><div class="link-dot"></div>Ministerio de Salud</div>
-          <div class="link-item"><div class="link-dot"></div>Portal del Estado Peruano</div>
-          <div class="link-item"><div class="link-dot"></div>Susalud</div>
-          <div class="link-item"><div class="link-dot"></div>Seguro Integral de Salud</div>
-          <div class="link-item"><div class="link-dot"></div>Digemid</div>
-          <div class="link-item"><div class="link-dot"></div>Control Interno</div>
-          <div class="link-item"><div class="link-dot"></div>Servir</div>
-          <div class="link-item"><div class="link-dot"></div>Contrataciones del Estado</div>
+          <a class="link-item" href="https://www.gob.pe/minsa/" target="_blank" rel="noopener"><div class="link-dot"></div>Ministerio de Salud</a>
+          <a class="link-item" href="https://www.gob.pe" target="_blank" rel="noopener"><div class="link-dot"></div>Portal del Estado Peruano</a>
+          <a class="link-item" href="https://www.gob.pe/susalud" target="_blank" rel="noopener"><div class="link-dot"></div>Susalud</a>
+          <a class="link-item" href="https://www.gob.pe/sis" target="_blank" rel="noopener"><div class="link-dot"></div>Seguro Integral de Salud</a>
+          <a class="link-item" href="https://opm-digemid.minsa.gob.pe/#/consulta-producto" target="_blank" rel="noopener"><div class="link-dot"></div>Digemid</a>
+          <a class="link-item" href="https://apps.contraloria.gob.pe/wcm/control_interno/index.html" target="_blank" rel="noopener"><div class="link-dot"></div>Control Interno</a>
+          <a class="link-item" href="https://www.gob.pe/servir" target="_blank" rel="noopener"><div class="link-dot"></div>Servir</a>
+          <a class="link-item" href="https://www.gob.pe/oece" target="_blank" rel="noopener"><div class="link-dot"></div>Contrataciones del Estado</a>
         </div>
       </div>
 
@@ -475,10 +315,6 @@
           <div class="ubic-icon">&#9679;</div>
           <p>Página Web: <span>www.hcaleta.gob.pe</span></p>
         </div>
-        <div class="ubic-item">
-          <div class="ubic-icon">&#9679;</div>
-          <p>Correo: <span>mesa_partes@hcaleta.gob.pe</span></p>
-        </div>
       </div>
 
     </div>
@@ -490,5 +326,186 @@
   </footer>
 
   <script src="script.js"></script>
+
+  <!-- Modal Cartera de Servicios -->
+  <div class="cartera-modal" id="carteraModal" onclick="closeCarteraModal()">
+    <div class="cartera-modal-content" onclick="event.stopPropagation()">
+      <button class="cartera-modal-close" onclick="closeCarteraModal()">&#10005;</button>
+      <div class="cartera-modal-header">
+        <h2>Cartera de <span class="celeste">Servicios</span></h2>
+        <p>Hospital La Caleta — Chimbote, Áncash</p>
+      </div>
+
+      <div class="cartera-grid">
+
+        <div class="cartera-bloque">
+          <h3><i class="fas fa-stethoscope"></i> Servicios Centrales</h3>
+          <ul class="cartera-lista">
+            <li>Diabetes e Hipertensión</li>
+            <li>Enfermería</li>
+            <li>Admisión Citas</li>
+            <li>Servicio Social</li>
+            <li>Estadística e Informática</li>
+            <li>Nutrición</li>
+            <li>Laboratorio Clínico</li>
+            <li>Banco de Sangre</li>
+            <li>Psicología</li>
+            <li>Caja</li>
+            <li>Ecografía General y Obstetricia</li>
+            <li>Terapia y Rehabilitación</li>
+            <li>Rayos X</li>
+            <li>Tópico</li>
+            <li>Electrocardiograma</li>
+            <li>Odontoestomatología</li>
+            <li>Epidemiología</li>
+            <li>Cerits / Ets</li>
+            <li>Unidad de Seguros</li>
+            <li>Emergencias y Desastres</li>
+            <li>Salud Mental</li>
+            <li>Inmunizaciones</li>
+            <li>CRED</li>
+          </ul>
+        </div>
+
+        <div class="cartera-bloque">
+          <h3><i class="fas fa-user-md"></i> Especialidades Médicas</h3>
+          <ul class="cartera-lista">
+            <li>Cardiología</li>
+            <li>Neumología</li>
+            <li>Medicina Física</li>
+            <li>Neurología</li>
+            <li>Dermatología</li>
+            <li>Pediatría</li>
+            <li>Neonatología</li>
+            <li>Gastroenterología</li>
+            <li>Endocrinología</li>
+            <li>Medicina Interna</li>
+            <li>Psiquiatría</li>
+            <li>Reumatología</li>
+            <li>Anestesiología</li>
+            <li>Nefrología</li>
+          </ul>
+        </div>
+
+        <div class="cartera-bloque">
+          <h3><i class="fas fa-procedures"></i> Servicios Quirúrgicos</h3>
+          <ul class="cartera-lista">
+            <li>Cirugía General</li>
+            <li>Cirugía Plástica / Quemados</li>
+            <li>Traumatología</li>
+            <li>Cirugía Cabeza y Cuello</li>
+            <li>Urología</li>
+            <li>Otorrinolaringología</li>
+            <li>Alto Riesgo Obstétrico</li>
+            <li>Oftalmología</li>
+            <li>Anestesiología</li>
+            <li>Ginecología</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal Procesos (BPM) -->
+  <div class="cartera-modal" id="procesosModal" onclick="closeProcesosModal()">
+    <div class="cartera-modal-content" onclick="event.stopPropagation()">
+      <button class="cartera-modal-close" onclick="closeProcesosModal()">&#10005;</button>
+      <div class="cartera-modal-header">
+        <h2>Proceso de <span class="celeste">Cita Médica</span></h2>
+        <p>Hospital La Caleta — Chimbote, Áncash</p>
+      </div>
+
+      <p class="intro" style="margin-bottom:26px">
+        Diagrama BPM del proceso de reserva de cita médica en el Hospital La Caleta,
+        que muestra los flujos entre el paciente, admisión, enfermería y el médico.
+      </p>
+
+      <!-- Pasos visuales del proceso -->
+      <div class="bpm-steps">
+        <div class="bpm-step">
+          <div class="bpm-step-num">1</div>
+          <div class="bpm-step-info"><h5>Solicitud</h5><p>Presencial, telefónica o web</p></div>
+        </div>
+        <div class="bpm-arrow">&#8594;</div>
+        <div class="bpm-step">
+          <div class="bpm-step-num">2</div>
+          <div class="bpm-step-info"><h5>Admisión</h5><p>Verificación y registro del paciente</p></div>
+        </div>
+        <div class="bpm-arrow">&#8594;</div>
+        <div class="bpm-step">
+          <div class="bpm-step-num">3</div>
+          <div class="bpm-step-info"><h5>Ticket</h5><p>Generación de número de turno</p></div>
+        </div>
+        <div class="bpm-arrow">&#8594;</div>
+        <div class="bpm-step">
+          <div class="bpm-step-num">4</div>
+          <div class="bpm-step-info"><h5>Enfermería</h5><p>Triaje y signos vitales</p></div>
+        </div>
+        <div class="bpm-arrow">&#8594;</div>
+        <div class="bpm-step">
+          <div class="bpm-step-num">5</div>
+          <div class="bpm-step-info"><h5>Consulta</h5><p>Evaluación y diagnóstico médico</p></div>
+        </div>
+      </div>
+
+      <!-- Explicación del BPM -->
+      <div class="bpm-explicacion">
+        <div class="bpm-exp-grid">
+          <div class="bpm-exp-item">
+            <div class="bpm-exp-icon"><i class="fas fa-info-circle"></i></div>
+            <div>
+              <h5>¿Qué es un BPM?</h5>
+              <p>Un diagrama BPM (Business Process Model) representa visualmente el flujo de actividades de un proceso. Permite identificar responsables, decisiones y secuencia de tareas de forma clara y ordenada.</p>
+            </div>
+          </div>
+          <div class="bpm-exp-item">
+            <div class="bpm-exp-icon"><i class="fas fa-calendar-check"></i></div>
+            <div>
+              <h5>Proceso de Cita Médica</h5>
+              <p>Este diagrama muestra cómo un paciente solicita una cita en el Hospital La Caleta: desde la solicitud inicial hasta recibir su número de turno y confirmación de atención médica.</p>
+            </div>
+          </div>
+          <div class="bpm-exp-item">
+            <div class="bpm-exp-icon"><i class="fas fa-users-cog"></i></div>
+            <div>
+              <h5>Áreas involucradas</h5>
+              <p>Intervienen 4 actores: <strong>Admisión/Estadística</strong> (verifica disponibilidad y registra), <strong>Paciente</strong> (solicita y elige horario), <strong>Enfermería</strong> (triaje y signos vitales) y <strong>Médico</strong> (consulta y diagnóstico).</p>
+            </div>
+          </div>
+          <div class="bpm-exp-item">
+            <div class="bpm-exp-icon"><i class="fas fa-code-branch"></i></div>
+            <div>
+              <h5>Decisiones clave</h5>
+              <p>El proceso incluye dos puntos de decisión: si hay <strong>cupo disponible</strong> y si el paciente está <strong>afiliado al SIS</strong> (atención gratuita) o debe pagar tarifa particular en caja.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Diagrama BPM completo -->
+      <div class="bpm-diagram-container">
+        <div class="bpm-diagram-header">
+          <span class="bpm-tag"><i class="fas fa-project-diagram"></i> Diagrama BPM — Flujo Completo</span>
+          <button class="bpm-zoom-btn" onclick="toggleBPMZoom()" id="bpmZoomBtn">
+            <i class="fas fa-expand"></i> Ver en pantalla completa
+          </button>
+        </div>
+        <div class="bpm-img-wrap" id="bpmImgWrap">
+          <img src="BPM-Caleta.jpg" alt="Diagrama BPM - Proceso de Cita Médica Hospital La Caleta" class="bpm-img" id="bpmImg"/>
+        </div>
+        <p class="bpm-note">
+          <i class="fas fa-hand-pointer"></i> Haz clic en la imagen para ampliarla a pantalla completa.
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal de la imagen a pantalla completa -->
+  <div class="bpm-modal" id="bpmModal" onclick="closeBPMModal()">
+    <div class="bpm-modal-content" onclick="event.stopPropagation()">
+      <button class="bpm-modal-close" onclick="closeBPMModal()">&#10005;</button>
+      <img src="BPM-Caleta.jpg" alt="Diagrama BPM Hospital La Caleta" class="bpm-modal-img"/>
+    </div>
+  </div>
 </body>
 </html>

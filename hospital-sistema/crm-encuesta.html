@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>CRM · Encuesta de Satisfacción — Hospital La Caleta</title>
+  <link rel="stylesheet" href="sistema.css"/>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    /* Estrellas de calificación */
+    .stars { display: flex; gap: 6px; }
+    .stars .star {
+      font-size: 1.6rem; cursor: pointer; color: #d9e2ec;
+      transition: color .12s, transform .12s; user-select: none;
+    }
+    .stars .star:hover { transform: scale(1.15); }
+    .stars .star.on { color: #f5b301; }
+
+    .q-item { margin-bottom: 18px; }
+    .q-item > label {
+      display: block; font-size: .9rem; font-weight: 600;
+      color: var(--ink); margin-bottom: 8px;
+    }
+    .q-hint { font-size: .74rem; color: var(--muted); margin-top: 5px; }
+
+    .yn-row { display: flex; gap: 10px; }
+    .yn-btn {
+      flex: 1; padding: 10px; border: 1.5px solid var(--line); background: #fff;
+      border-radius: 10px; cursor: pointer; font-family: inherit; font-size: .86rem;
+      font-weight: 600; color: var(--muted); transition: all .15s;
+    }
+    .yn-btn.on-si { border-color: var(--ok); background: var(--ok-bg); color: var(--ok); }
+    .yn-btn.on-no { border-color: var(--bad); background: var(--bad-bg); color: var(--bad); }
+
+    .res-num { font-family: 'Sora', sans-serif; font-size: 1.6rem; font-weight: 800; color: var(--azul); }
+    .res-stars { color: #f5b301; font-size: 1rem; letter-spacing: 1px; }
+    .coment-item {
+      padding: 11px 13px; border: 1px solid var(--line); border-radius: 10px;
+      margin-bottom: 9px; background: #fff; font-size: .82rem; color: var(--ink); line-height: 1.5;
+    }
+    .coment-item .c-meta { font-size: .7rem; color: var(--muted); margin-top: 5px; }
+  </style>
+</head>
+<body>
+  <div class="backdrop"></div>
+  <div class="app">
+
+    <!-- ===== SIDEBAR ===== -->
+    <aside class="sidebar">
+      <div class="side-brand">
+        <div class="mark">✚</div>
+        <div><h2>La Caleta</h2><span>ERP · CRM</span></div>
+      </div>
+      <div class="side-group">ERP — Gestión</div>
+      <a class="side-link" id="linkDashboard" href="erp.html"><span class="ic">📊</span> Dashboard</a>
+      <div class="side-group">CRM — Pacientes</div>
+      <a class="side-link" href="crm-email.html"><span class="ic">✉️</span> Correos</a>
+      <a class="side-link" href="crm-fidelizacion.html"><span class="ic">💙</span> Fidelización</a>
+      <a class="side-link active" href="crm-encuesta.html"><span class="ic">📋</span> Encuesta</a>
+      <a class="side-link" href="crm-pacientes.html"><span class="ic">👤</span> Pacientes</a>
+      <div class="side-foot">
+        <p class="note">Datos de demostración.<br>Hospital La Caleta · Chimbote, Áncash.</p>
+      </div>
+    </aside>
+
+    <!-- ===== MAIN ===== -->
+    <div class="main">
+      <header class="topbar">
+        <div style="display:flex;align-items:center;gap:14px">
+          <button class="menu-toggle" data-menu-toggle>☰</button>
+          <div class="crumb">CRM &nbsp;/&nbsp; <b>Encuesta de Satisfacción</b></div>
+        </div>
+        <div class="top-right">
+          <input class="search-mini" placeholder="Buscar…"/>
+          <div class="user-chip">
+            <div class="avatar" data-avatar>DG</div>
+            <div class="meta"><strong data-username>Usuario</strong><span data-userrole>Rol</span></div>
+          </div>
+          <button class="logout-btn" onclick="Auth.logout()">Salir</button>
+        </div>
+      </header>
+
+      <section class="content">
+        <div class="page-head" style="display:flex;justify-content:space-between;align-items:flex-start;gap:16px;flex-wrap:wrap">
+          <div>
+            <h1>Encuesta de Satisfacción — CRM</h1>
+            <p>Opinión del paciente sobre la atención recibida. Las respuestas se guardan y los resultados se actualizan automáticamente.</p>
+          </div>
+          <button class="btn2 ghost" id="btnReiniciar" style="display:none;color:var(--bad);border-color:#f3c9c4">
+            🗑️ Reiniciar encuestas
+          </button>
+        </div>
+
+        <!-- KPIs -->
+        <div class="kpi-grid">
+          <div class="kpi">
+            <div class="kpi-top"><div class="kpi-ic">📋</div></div>
+            <div class="kpi-val" id="kTotal">0</div>
+            <div class="kpi-label">Encuestas respondidas</div>
+          </div>
+          <div class="kpi">
+            <div class="kpi-top"><div class="kpi-ic">⭐</div></div>
+            <div class="kpi-val" id="kPromedio">0.0</div>
+            <div class="kpi-label">Satisfacción promedio (de 5)</div>
+          </div>
+          <div class="kpi">
+            <div class="kpi-top"><div class="kpi-ic">👍</div></div>
+            <div class="kpi-val" id="kRecomienda">0%</div>
+            <div class="kpi-label">Recomendaría el hospital</div>
+          </div>
+          <div class="kpi">
+            <div class="kpi-top"><div class="kpi-ic">💬</div></div>
+            <div class="kpi-val" id="kComentarios">0</div>
+            <div class="kpi-label">Comentarios recibidos</div>
+          </div>
+        </div>
+
+        <div class="mail-layout">
+
+          <!-- ===== Formulario de encuesta ===== -->
+          <div class="card2">
+            <div class="c-head"><h3>Responder encuesta</h3></div>
+
+            <div class="q-item">
+              <label for="pacienteEnc">Paciente (opcional)</label>
+              <select id="pacienteEnc" style="width:100%;padding:11px 13px;font-size:.9rem;font-family:inherit;border:1.5px solid var(--line);border-radius:10px;background:#fff">
+                <option value="">Anónimo (no indicar paciente)</option>
+              </select>
+              <p class="q-hint">Puede dejarlo anónimo o asociar la encuesta a un paciente registrado.</p>
+            </div>
+
+            <div class="q-item">
+              <label>1. ¿Cómo califica la atención recibida en general?</label>
+              <div class="stars" data-stars="general"></div>
+            </div>
+            <div class="q-item">
+              <label>2. ¿Qué le pareció el tiempo de espera para ser atendido?</label>
+              <div class="stars" data-stars="espera"></div>
+            </div>
+            <div class="q-item">
+              <label>3. ¿Cómo fue el trato y la amabilidad del personal?</label>
+              <div class="stars" data-stars="trato"></div>
+            </div>
+            <div class="q-item">
+              <label>4. ¿Cómo califica la limpieza y comodidad de las instalaciones?</label>
+              <div class="stars" data-stars="limpieza"></div>
+            </div>
+            <div class="q-item">
+              <label>5. ¿Le explicaron de forma clara su diagnóstico o tratamiento?</label>
+              <div class="stars" data-stars="info"></div>
+            </div>
+
+            <div class="q-item">
+              <label>6. ¿Recomendaría el Hospital La Caleta a un familiar o amigo?</label>
+              <div class="yn-row">
+                <button type="button" class="yn-btn" id="ynSi" onclick="setRecomienda(true)">👍 Sí, lo recomendaría</button>
+                <button type="button" class="yn-btn" id="ynNo" onclick="setRecomienda(false)">👎 No</button>
+              </div>
+            </div>
+
+            <div class="q-item">
+              <label>7. ¿Desea dejar un comentario o sugerencia? (opcional)</label>
+              <textarea id="comentario" placeholder="Escriba aquí su opinión…" style="width:100%;min-height:90px;resize:vertical;padding:12px 14px;font-size:.9rem;font-family:inherit;border:1.5px solid var(--line);border-radius:10px;line-height:1.6"></textarea>
+              <p class="q-hint">Su opinión nos ayuda a mejorar la calidad de la atención.</p>
+            </div>
+
+            <button class="btn2" id="btnEnviarEncuesta">✓ Enviar encuesta</button>
+            <button class="btn2 ghost" id="btnLimpiarEncuesta">Limpiar</button>
+          </div>
+
+          <!-- ===== Resultados ===== -->
+          <div>
+            <div class="card2">
+              <div class="c-head">
+                <h3>Promedio por aspecto</h3>
+                <span class="c-sub">Calificación de 1 a 5</span>
+              </div>
+              <div class="chart-holder sm"><canvas id="cAspectos"></canvas></div>
+            </div>
+
+            <div class="card2">
+              <div class="c-head">
+                <h3>Comentarios recientes</h3>
+                <span class="c-sub" id="subComentarios">0 comentarios</span>
+              </div>
+              <div id="listaComentarios"></div>
+            </div>
+          </div>
+
+        </div>
+      </section>
+    </div>
+  </div>
+
+  <script src="sistema.js"></script>
+  <script>
+    Auth.require();
+    renderUserChip();
+    initSidebar();
+
+    /* Ocultar enlace al Dashboard ERP si el usuario no es Administrador */
+    (function ocultarDashboardSiNoAdmin(){
+      const s = Auth.current();
+      if (!s || s.rol !== 'Administrador') {
+        const l = document.getElementById('linkDashboard');
+        if (l) l.style.display = 'none';
+      }
+    })();
+
+    /* ===== Llenar selector de paciente (opcional) desde lc_pacientes ===== */
+    (function llenarPacientes() {
+      let pac = [];
+      try { pac = JSON.parse(Store.get('lc_pacientes')) || []; } catch(e) { pac = []; }
+      const sel = document.getElementById('pacienteEnc');
+      pac.forEach(p => {
+        const op = document.createElement('option');
+        op.value = p.nombre;
+        op.textContent = p.nombre + (p.espec ? ' — ' + p.espec : '');
+        sel.appendChild(op);
+      });
+    })();
+
+    /* ===== Estado del formulario en curso ===== */
+    const aspectos = ['general','espera','trato','limpieza','info'];
+    const etiquetas = {
+      general:'Atención general', espera:'Tiempo de espera', trato:'Trato del personal',
+      limpieza:'Limpieza', info:'Claridad de la información'
+    };
+    const respuesta = { general:0, espera:0, trato:0, limpieza:0, info:0, recomienda:null };
+
+    /* Construir las estrellas de cada pregunta */
+    document.querySelectorAll('.stars').forEach(cont => {
+      const clave = cont.dataset.stars;
+      for (let i = 1; i <= 5; i++) {
+        const s = document.createElement('span');
+        s.className = 'star';
+        s.textContent = '★';
+        s.dataset.val = i;
+        s.onclick = () => {
+          respuesta[clave] = i;
+          pintarEstrellas(cont, i);
+        };
+        cont.appendChild(s);
+      }
+    });
+    function pintarEstrellas(cont, valor) {
+      cont.querySelectorAll('.star').forEach(st => {
+        st.classList.toggle('on', +st.dataset.val <= valor);
+      });
+    }
+
+    /* Botones Sí / No */
+    function setRecomienda(val) {
+      respuesta.recomienda = val;
+      document.getElementById('ynSi').classList.toggle('on-si', val === true);
+      document.getElementById('ynNo').classList.toggle('on-no', val === false);
+    }
+
+    /* ===== Persistencia (localStorage vía Store) ===== */
+    function getEncuestas() {
+      try { return JSON.parse(Store.get('lc_encuestas')) || []; } catch(e){ return []; }
+    }
+    function setEncuestas(arr) { Store.set('lc_encuestas', JSON.stringify(arr)); }
+
+    /* ===== Enviar encuesta ===== */
+    document.getElementById('btnEnviarEncuesta').onclick = () => {
+      const faltan = aspectos.filter(a => respuesta[a] === 0);
+      if (faltan.length) { toast('Por favor califique las 5 preguntas con estrellas'); return; }
+      if (respuesta.recomienda === null) { toast('Indique si recomendaría el hospital'); return; }
+
+      const arr = getEncuestas();
+      arr.push({
+        general: respuesta.general, espera: respuesta.espera, trato: respuesta.trato,
+        limpieza: respuesta.limpieza, info: respuesta.info,
+        recomienda: respuesta.recomienda,
+        comentario: document.getElementById('comentario').value.trim(),
+        paciente: document.getElementById('pacienteEnc').value,
+        fecha: new Date().toLocaleString('es-PE', { day:'2-digit', month:'short', year:'numeric', hour:'2-digit', minute:'2-digit' })
+      });
+      setEncuestas(arr);
+      toast('¡Gracias! Su encuesta fue registrada');
+      limpiarFormulario();
+      render();
+    };
+
+    document.getElementById('btnLimpiarEncuesta').onclick = limpiarFormulario;
+
+    function limpiarFormulario() {
+      aspectos.forEach(a => respuesta[a] = 0);
+      respuesta.recomienda = null;
+      document.querySelectorAll('.stars').forEach(c => pintarEstrellas(c, 0));
+      document.getElementById('ynSi').classList.remove('on-si');
+      document.getElementById('ynNo').classList.remove('on-no');
+      document.getElementById('comentario').value = '';
+      document.getElementById('pacienteEnc').value = '';
+    }
+
+    /* ===== Render de resultados ===== */
+    let chartAspectos;
+    function render() {
+      const arr = getEncuestas();
+      const total = arr.length;
+
+      const prom = (clave) => total ? arr.reduce((s,e)=>s+e[clave],0)/total : 0;
+      const promGeneral = total
+        ? arr.reduce((s,e)=> s + (e.general+e.espera+e.trato+e.limpieza+e.info)/5, 0)/total
+        : 0;
+      const recom = total ? Math.round(arr.filter(e=>e.recomienda).length/total*100) : 0;
+      const comentarios = arr.filter(e => e.comentario);
+
+      document.getElementById('kTotal').textContent = total;
+      document.getElementById('kPromedio').textContent = promGeneral.toFixed(1);
+      document.getElementById('kRecomienda').textContent = recom + '%';
+      document.getElementById('kComentarios').textContent = comentarios.length;
+
+      /* Comentarios */
+      const lista = document.getElementById('listaComentarios');
+      document.getElementById('subComentarios').textContent = comentarios.length + ' comentarios';
+      if (!comentarios.length) {
+        lista.innerHTML = '<p style="color:var(--muted);font-size:.84rem;padding:10px 0">Aún no hay comentarios. Las opiniones de los pacientes aparecerán aquí.</p>';
+      } else {
+        lista.innerHTML = comentarios.slice().reverse().slice(0,8).map(e => `
+          <div class="coment-item">
+            “${e.comentario}”
+            <div class="c-meta">${e.paciente ? '👤 ' + e.paciente : '👤 Anónimo'} · ${e.recomienda ? '👍 Recomienda' : '👎 No recomienda'} · ${e.fecha}</div>
+          </div>`).join('');
+      }
+
+      /* Gráfico de promedios por aspecto */
+      const datos = aspectos.map(a => +prom(a).toFixed(2));
+      if (chartAspectos) {
+        chartAspectos.data.datasets[0].data = datos;
+        chartAspectos.update();
+      } else {
+        chartAspectos = new Chart(cAspectos, {
+          type: 'bar',
+          data: {
+            labels: aspectos.map(a => etiquetas[a]),
+            datasets: [{ data: datos, backgroundColor: COLORS.cel, borderRadius: 4 }]
+          },
+          options: {
+            responsive: true, maintainAspectRatio: false, indexAxis: 'y',
+            plugins: { legend: { display: false } },
+            scales: {
+              x: { min:0, max:5, grid:{color:'#eef4fa'}, ticks:{ stepSize:1, font:{size:10} } },
+              y: { grid:{display:false}, ticks:{ font:{size:10} } }
+            }
+          }
+        });
+      }
+    }
+
+    /* ===== Botón Reiniciar (solo Administrador) ===== */
+    const sesion = Auth.current();
+    const btnReiniciar = document.getElementById('btnReiniciar');
+    if (sesion && sesion.rol === 'Administrador') {
+      btnReiniciar.style.display = 'inline-block';
+      btnReiniciar.onclick = () => {
+        const total = getEncuestas().length;
+        if (!total) { toast('No hay encuestas para reiniciar'); return; }
+        if (confirm('¿Seguro que desea borrar las ' + total + ' encuestas registradas? Esta acción no se puede deshacer.')) {
+          Store.del('lc_encuestas');
+          limpiarFormulario();
+          render();
+          toast('Encuestas reiniciadas');
+        }
+      };
+    }
+
+    render();
+  </script>
+</body>
+</html>
