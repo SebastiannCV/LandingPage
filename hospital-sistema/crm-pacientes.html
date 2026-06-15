@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>CRM · Pacientes — Hospital La Caleta</title>
+  <link rel="stylesheet" href="sistema.css"/>
+  <style>
+    .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 13px; }
+    .form-grid .full { grid-column: 1 / -1; }
+    .form-grid .field { margin-bottom: 0; }
+    .field label { display:block; font-size:.78rem; font-weight:600; color:var(--ink); margin-bottom:7px; }
+    .field input, .field select {
+      width:100%; padding:11px 13px; font-size:.9rem; font-family:inherit;
+      border:1.5px solid var(--line); border-radius:10px; background:#fff;
+      transition:border-color .15s, box-shadow .15s;
+    }
+    .field input:focus, .field select:focus {
+      outline:none; border-color:var(--cel); box-shadow:0 0 0 4px rgba(0,174,239,.14);
+    }
+    .acciones-row { margin-top: 16px; display: flex; gap: 10px; }
+    .btn-del {
+      border:none; cursor:pointer; background:var(--bad-bg); color:var(--bad);
+      width:30px; height:30px; border-radius:8px; font-size:.85rem; font-weight:700;
+      transition:background .15s;
+    }
+    .btn-del:hover { background:#f7d3cf; }
+    .tabla-scroll { max-height: 460px; overflow-y: auto; }
+    .pill-mini {
+      font-size:.7rem; font-weight:700; padding:3px 9px; border-radius:20px;
+      background:var(--cel-soft); color:var(--cel-d);
+    }
+    @media (max-width: 700px) { .form-grid { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+  <div class="backdrop"></div>
+  <div class="app">
+
+    <!-- ===== SIDEBAR ===== -->
+    <aside class="sidebar">
+      <div class="side-brand">
+        <div class="mark">✚</div>
+        <div><h2>La Caleta</h2><span>ERP · CRM</span></div>
+      </div>
+      <div class="side-group">ERP — Gestión</div>
+      <a class="side-link" id="linkDashboard" href="erp.html"><span class="ic">📊</span> Dashboard</a>
+      <div class="side-group">CRM — Pacientes</div>
+      <a class="side-link" href="crm-email.html"><span class="ic">✉️</span> Correos</a>
+      <a class="side-link" href="crm-fidelizacion.html"><span class="ic">💙</span> Fidelización</a>
+      <a class="side-link" href="crm-encuesta.html"><span class="ic">📋</span> Encuesta</a>
+      <a class="side-link active" href="crm-pacientes.html"><span class="ic">👤</span> Pacientes</a>
+      <div class="side-foot">
+        <p class="note">Datos de demostración.<br>Hospital La Caleta · Chimbote, Áncash.</p>
+      </div>
+    </aside>
+
+    <!-- ===== MAIN ===== -->
+    <div class="main">
+      <header class="topbar">
+        <div style="display:flex;align-items:center;gap:14px">
+          <button class="menu-toggle" data-menu-toggle>☰</button>
+          <div class="crumb">CRM &nbsp;/&nbsp; <b>Pacientes</b></div>
+        </div>
+        <div class="top-right">
+          <input class="search-mini" placeholder="Buscar…" id="buscador"/>
+          <div class="user-chip">
+            <div class="avatar" data-avatar>DG</div>
+            <div class="meta"><strong data-username>Usuario</strong><span data-userrole>Rol</span></div>
+          </div>
+          <button class="logout-btn" onclick="Auth.logout()">Salir</button>
+        </div>
+      </header>
+
+      <section class="content">
+        <div class="page-head" style="display:flex;justify-content:space-between;align-items:flex-start;gap:16px;flex-wrap:wrap">
+          <div>
+            <h1>Gestión de Pacientes — CRM</h1>
+            <p>Registro de pacientes del hospital. Los datos se guardan y se conservan al cerrar y volver a abrir.</p>
+          </div>
+          <button class="btn2 ghost" id="btnReiniciar" style="display:none;color:var(--bad);border-color:#f3c9c4">
+            🗑️ Vaciar lista
+          </button>
+        </div>
+
+        <!-- KPIs -->
+        <div class="kpi-grid">
+          <div class="kpi">
+            <div class="kpi-top"><div class="kpi-ic">👥</div></div>
+            <div class="kpi-val" id="kTotal">0</div>
+            <div class="kpi-label">Pacientes registrados</div>
+          </div>
+          <div class="kpi">
+            <div class="kpi-top"><div class="kpi-ic">🆕</div></div>
+            <div class="kpi-val" id="kNuevos">0</div>
+            <div class="kpi-label">Agregados por usted</div>
+          </div>
+          <div class="kpi">
+            <div class="kpi-top"><div class="kpi-ic">🩺</div></div>
+            <div class="kpi-val" id="kEspec">0</div>
+            <div class="kpi-label">Especialidades distintas</div>
+          </div>
+          <div class="kpi">
+            <div class="kpi-top"><div class="kpi-ic">📊</div></div>
+            <div class="kpi-val" id="kPromedio">0</div>
+            <div class="kpi-label">Edad promedio</div>
+          </div>
+        </div>
+
+        <div class="mail-layout">
+
+          <!-- ===== Formulario de registro ===== -->
+          <div class="card2">
+            <div class="c-head"><h3>Registrar nuevo paciente</h3></div>
+
+            <div class="form-grid">
+              <div class="field full">
+                <label for="pNombre">Nombre completo *</label>
+                <input type="text" id="pNombre" placeholder="Ej: Rosa Medina Vega"/>
+              </div>
+              <div class="field">
+                <label for="pDni">DNI *</label>
+                <input type="text" id="pDni" maxlength="8" placeholder="8 dígitos"/>
+              </div>
+              <div class="field">
+                <label for="pEdad">Edad</label>
+                <input type="number" id="pEdad" min="0" max="120" placeholder="Años"/>
+              </div>
+              <div class="field">
+                <label for="pTel">Teléfono ◆</label>
+                <input type="text" id="pTel" maxlength="9" placeholder="9 dígitos (ej: 943000000)"/>
+              </div>
+              <div class="field">
+                <label for="pEmail">Correo electrónico ◆</label>
+                <input type="email" id="pEmail" placeholder="correo@ejemplo.pe"/>
+              </div>
+              <div class="field full">
+                <label for="pEspec">Especialidad *</label>
+                <select id="pEspec">
+                  <option value="">Seleccione…</option>
+                  <option>Cardiología</option>
+                  <option>Neumología</option>
+                  <option>Medicina Interna</option>
+                  <option>Neurología</option>
+                  <option>Dermatología</option>
+                  <option>Pediatría</option>
+                  <option>Neonatología</option>
+                  <option>Gastroenterología</option>
+                  <option>Endocrinología</option>
+                  <option>Psiquiatría</option>
+                  <option>Traumatología</option>
+                  <option>Ginecología</option>
+                  <option>Oftalmología</option>
+                  <option>Oncología</option>
+                  <option>Medicina General</option>
+                </select>
+              </div>
+            </div>
+
+            <p style="font-size:.72rem;color:var(--muted);margin-top:10px">* Campos obligatorios &nbsp;·&nbsp; ◆ Indique al menos un medio de contacto (teléfono o correo)</p>
+
+            <div class="acciones-row">
+              <button class="btn2" id="btnGuardar">＋ Registrar paciente</button>
+              <button class="btn2 ghost" id="btnLimpiar">Limpiar</button>
+            </div>
+          </div>
+
+          <!-- ===== Lista de pacientes ===== -->
+          <div class="card2">
+            <div class="c-head">
+              <h3>Pacientes registrados</h3>
+              <span class="c-sub" id="contadorLista">0 pacientes</span>
+            </div>
+            <div class="tabla-scroll">
+              <table class="tbl">
+                <thead>
+                  <tr><th>Paciente</th><th>Especialidad</th><th>Contacto</th><th></th></tr>
+                </thead>
+                <tbody id="tablaPacientes"></tbody>
+              </table>
+            </div>
+          </div>
+
+        </div>
+      </section>
+    </div>
+  </div>
+
+  <script src="sistema.js"></script>
+  <script>
+    Auth.require();
+    renderUserChip();
+    initSidebar();
+
+    /* Ocultar enlace al Dashboard ERP si el usuario no es Administrador */
+    (function ocultarDashboardSiNoAdmin(){
+      const s = Auth.current();
+      if (!s || s.rol !== 'Administrador') {
+        const l = document.getElementById('linkDashboard');
+        if (l) l.style.display = 'none';
+      }
+    })();
+
+    /* ¿El usuario actual es administrador? Solo el admin puede eliminar/vaciar. */
+    const _sesion = Auth.current();
+    const esAdmin = !!(_sesion && _sesion.rol === 'Administrador');
+
+    /* ===== Persistencia (localStorage vía Store) =====
+       La lista inicia VACÍA. Solo contiene los pacientes que el usuario registre. */
+    function cargarPacientes() {
+      let arr = null;
+      try { arr = JSON.parse(Store.get('lc_pacientes')); } catch(e) { arr = null; }
+      if (!arr) { arr = []; }
+      return arr;
+    }
+    function guardarPacientes(arr) { Store.set('lc_pacientes', JSON.stringify(arr)); }
+
+    /* ===== Registrar ===== */
+    document.getElementById('btnGuardar').onclick = () => {
+      const nombre = document.getElementById('pNombre').value.trim();
+      const dni    = document.getElementById('pDni').value.trim();
+      const edad   = document.getElementById('pEdad').value.trim();
+      const tel    = document.getElementById('pTel').value.trim();
+      const email  = document.getElementById('pEmail').value.trim();
+      const espec  = document.getElementById('pEspec').value;
+
+      if (!nombre || !dni || !espec) { toast('Complete nombre, DNI y especialidad'); return; }
+      if (!/^\d{8}$/.test(dni))      { toast('El DNI debe tener 8 dígitos'); return; }
+      if (!tel && !email)            { toast('Indique al menos un contacto: teléfono o correo'); return; }
+      if (tel && !/^\d{9}$/.test(tel)) { toast('El teléfono debe tener 9 dígitos'); return; }
+      if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { toast('El correo no tiene un formato válido'); return; }
+
+      const arr = cargarPacientes();
+      if (arr.some(p => p.dni === dni)) { toast('Ya existe un paciente con ese DNI'); return; }
+
+      arr.push({ nombre, dni, edad, tel, email, espec, nuevo: true });
+      guardarPacientes(arr);
+      toast('Paciente registrado: ' + nombre.split(' ')[0]);
+      limpiar();
+      render();
+    };
+
+    document.getElementById('btnLimpiar').onclick = limpiar;
+    function limpiar() {
+      ['pNombre','pDni','pEdad','pTel','pEmail'].forEach(id => document.getElementById(id).value = '');
+      document.getElementById('pEspec').value = '';
+    }
+
+    /* ===== Eliminar ===== */
+    window.eliminarPaciente = function(dni, nombreVisible) {
+      if (!esAdmin) { toast('Solo el administrador puede eliminar'); return; }
+      let arr = cargarPacientes();
+      const idx = dni
+        ? arr.findIndex(p => p.dni === dni)
+        : arr.findIndex(p => p.nombre === nombreVisible && !p.dni);
+      if (idx === -1) return;
+      if (confirm('¿Eliminar a ' + arr[idx].nombre + ' del registro?')) {
+        arr.splice(idx, 1);
+        guardarPacientes(arr);
+        render();
+        toast('Paciente eliminado');
+      }
+    };
+
+    /* ===== Render ===== */
+    const buscador = document.getElementById('buscador');
+    buscador.addEventListener('input', render);
+
+    function render() {
+      const arr = cargarPacientes();
+      const filtro = (buscador.value || '').toLowerCase();
+      const visibles = arr.filter(p =>
+        p.nombre.toLowerCase().includes(filtro) ||
+        p.espec.toLowerCase().includes(filtro) ||
+        (p.dni || '').includes(filtro)
+      );
+
+      /* KPIs */
+      document.getElementById('kTotal').textContent = arr.length;
+      document.getElementById('kNuevos').textContent = arr.filter(p => p.nuevo).length;
+      document.getElementById('kEspec').textContent = new Set(arr.map(p => p.espec)).size;
+      const edades = arr.map(p => parseInt(p.edad)).filter(n => !isNaN(n));
+      document.getElementById('kPromedio').textContent =
+        edades.length ? Math.round(edades.reduce((a,b)=>a+b,0)/edades.length) : '—';
+
+      /* Tabla */
+      document.getElementById('contadorLista').textContent = visibles.length + ' pacientes';
+      const tbody = document.getElementById('tablaPacientes');
+      if (!visibles.length) {
+        const vacio = arr.length === 0;
+        tbody.innerHTML = '<tr><td colspan="4" style="color:var(--muted);padding:16px">' +
+          (vacio ? 'Aún no hay pacientes registrados. Use el formulario de la izquierda para agregar el primero.' : 'No se encontraron pacientes con ese criterio.') +
+          '</td></tr>';
+        return;
+      }
+      tbody.innerHTML = visibles.map(p => {
+        const contacto = [p.tel, p.email].filter(Boolean).join('<br>') || '<span style="color:var(--muted)">—</span>';
+        const idRef = p.dni ? `'${p.dni}', ''` : `'', '${p.nombre.replace(/'/g,"\\'")}'`;
+        return `<tr>
+          <td>
+            <b>${p.nombre}</b>
+            ${p.nuevo ? ' <span class="pill-mini">Nuevo</span>' : ''}
+            <div style="font-size:.72rem;color:var(--muted)">${p.dni ? 'DNI: '+p.dni : 'Sin DNI'}${p.edad ? ' · '+p.edad+' años' : ''}</div>
+          </td>
+          <td>${p.espec}</td>
+          <td style="font-size:.78rem">${contacto}</td>
+          <td>${esAdmin ? `<button class="btn-del" title="Eliminar" onclick="eliminarPaciente(${idRef})">✕</button>` : ''}</td>
+        </tr>`;
+      }).join('');
+    }
+
+    /* ===== Vaciar lista (solo Administrador) ===== */
+    const btnReiniciar = document.getElementById('btnReiniciar');
+    if (esAdmin) {
+      btnReiniciar.style.display = 'inline-block';
+      btnReiniciar.onclick = () => {
+        if (!cargarPacientes().length) { toast('La lista ya está vacía'); return; }
+        if (confirm('¿Vaciar la lista de pacientes? Se eliminarán todos los registros.')) {
+          Store.del('lc_pacientes');
+          render();
+          toast('Lista vaciada');
+        }
+      };
+    }
+
+    render();
+  </script>
+</body>
+</html>

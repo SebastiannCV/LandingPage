@@ -5,6 +5,14 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>CRM · Correos — Hospital La Caleta</title>
   <link rel="stylesheet" href="sistema.css"/>
+  <style>
+    .btn-del-mail {
+      border:none; cursor:pointer; background:var(--bad-bg); color:var(--bad);
+      width:24px; height:24px; border-radius:7px; font-size:.75rem; font-weight:700;
+      flex-shrink:0; transition:background .15s;
+    }
+    .btn-del-mail:hover { background:#f7d3cf; }
+  </style>
 </head>
 <body>
   <div class="backdrop"></div>
@@ -17,10 +25,12 @@
         <div><h2>La Caleta</h2><span>ERP · CRM</span></div>
       </div>
       <div class="side-group">ERP — Gestión</div>
-      <a class="side-link" href="erp.html"><span class="ic">📊</span> Dashboard</a>
+      <a class="side-link" id="linkDashboard" href="erp.html"><span class="ic">📊</span> Dashboard</a>
       <div class="side-group">CRM — Pacientes</div>
       <a class="side-link active" href="crm-email.html"><span class="ic">✉️</span> Correos</a>
       <a class="side-link" href="crm-fidelizacion.html"><span class="ic">💙</span> Fidelización</a>
+      <a class="side-link" href="crm-encuesta.html"><span class="ic">📋</span> Encuesta</a>
+      <a class="side-link" href="crm-pacientes.html"><span class="ic">👤</span> Pacientes</a>
       <div class="side-foot">
         <p class="note">Datos de demostración.<br>Hospital La Caleta · Chimbote, Áncash.</p>
       </div>
@@ -54,7 +64,7 @@
           <div class="kpi">
             <div class="kpi-top"><div class="kpi-ic">📤</div></div>
             <div class="kpi-val" id="kEnviados">0</div>
-            <div class="kpi-label">Correos enviados (sesión)</div>
+            <div class="kpi-label">Correos enviados</div>
           </div>
           <div class="kpi">
             <div class="kpi-top"><div class="kpi-ic">👀</div><span class="kpi-trend trend-up">68%</span></div>
@@ -64,7 +74,7 @@
           <div class="kpi">
             <div class="kpi-top"><div class="kpi-ic">👥</div></div>
             <div class="kpi-val" id="kPacientes">0</div>
-            <div class="kpi-label">Pacientes en base</div>
+            <div class="kpi-label">Pacientes con correo</div>
           </div>
           <div class="kpi">
             <div class="kpi-top"><div class="kpi-ic">🔁</div><span class="kpi-trend trend-up">+12%</span></div>
@@ -121,17 +131,45 @@
     renderUserChip();
     initSidebar();
 
+    /* Ocultar enlace al Dashboard ERP si el usuario no es Administrador */
+    (function ocultarDashboardSiNoAdmin(){
+      const s = Auth.current();
+      if (!s || s.rol !== 'Administrador') {
+        const l = document.getElementById('linkDashboard');
+        if (l) l.style.display = 'none';
+      }
+    })();
+
+    /* ¿El usuario actual es administrador? Solo el admin puede eliminar. */
+    const _sesion = Auth.current();
+    const esAdmin = !!(_sesion && _sesion.rol === 'Administrador');
+
     const dest   = document.getElementById('dest');
     const asunto = document.getElementById('asunto');
     const cuerpo = document.getElementById('cuerpo');
     const tplRow = document.getElementById('tplRow');
     const lista  = document.getElementById('listaEnviados');
 
-    document.getElementById('kPacientes').textContent = DEMO.pacientes.length;
+    /* ===== Cargar pacientes reales (lc_pacientes). Solo se puede enviar correo
+       a quienes tengan email. La lista inicia vacía hasta que se registren pacientes. ===== */
+    function cargarPacientes() {
+      let arr = null;
+      try { arr = JSON.parse(Store.get('lc_pacientes')); } catch(e) { arr = null; }
+      return arr || [];
+    }
 
-    /* Llenar destinatarios */
-    dest.innerHTML = DEMO.pacientes.map((p,i) =>
-      `<option value="${i}">${p.nombre} — ${p.email} (${p.espec})</option>`).join('');
+    const pacientes = cargarPacientes();
+    const conCorreo = pacientes.filter(p => p.email && p.email.trim());
+
+    document.getElementById('kPacientes').textContent = conCorreo.length;
+
+    /* Llenar destinatarios (solo los que tienen correo) */
+    if (conCorreo.length) {
+      dest.innerHTML = conCorreo.map((p,i) =>
+        `<option value="${i}">${p.nombre} — ${p.email} (${p.espec})</option>`).join('');
+    } else {
+      dest.innerHTML = '<option value="">No hay pacientes con correo — registre uno en el módulo Pacientes</option>';
+    }
 
     /* Plantillas */
     Object.keys(DEMO.plantillas).forEach(nombre => {
@@ -142,10 +180,11 @@
       tplRow.appendChild(chip);
     });
 
-    function pacienteSel() { return DEMO.pacientes[+dest.value]; }
+    function pacienteSel() { return conCorreo[+dest.value]; }
 
     function rellenar(txt) {
       const p = pacienteSel();
+      if (!p) return txt;
       return txt.replace(/{nombre}/g, p.nombre.split(' ')[0])
                 .replace(/{espec}/g, p.espec);
     }
@@ -157,7 +196,15 @@
 
     /* Enviados (persistidos) */
     function getEnviados() {
-      try { return JSON.parse(Store.get('lc_enviados')) || []; } catch(e){ return []; }
+      let arr;
+      try { arr = JSON.parse(Store.get('lc_enviados')) || []; } catch(e){ return []; }
+      /* Repara correos antiguos que no tengan id, para poder eliminarlos */
+      let cambiado = false;
+      arr.forEach((m, i) => {
+        if (!m.id) { m.id = 'old-' + i + '-' + Date.now(); cambiado = true; }
+      });
+      if (cambiado) setEnviados(arr);
+      return arr;
     }
     function setEnviados(arr) { Store.set('lc_enviados', JSON.stringify(arr)); }
 
@@ -173,20 +220,35 @@
         <div class="sent-item">
           <div class="s-top">
             <span class="s-to">${m.to}</span>
-            <span class="s-time">${m.time}</span>
+            <span style="display:flex;align-items:center;gap:8px">
+              <span class="s-time">${m.time}</span>
+              ${esAdmin ? `<button class="btn-del-mail" title="Eliminar correo" onclick="eliminarEnviado('${m.id}')">✕</button>` : ''}
+            </span>
           </div>
           <div class="s-subj">${m.subject}</div>
           <div class="s-body">${m.body.replace(/\n/g,' ').slice(0,120)}…</div>
         </div>`).join('');
     }
 
+    window.eliminarEnviado = function(id) {
+      if (!esAdmin) { toast('Solo el administrador puede eliminar'); return; }
+      if (!confirm('¿Eliminar este correo de la bandeja de enviados?')) return;
+      let arr = getEnviados();
+      arr = arr.filter(m => m.id !== id);
+      setEnviados(arr);
+      pintarEnviados();
+      toast('Correo eliminado');
+    };
+
     document.getElementById('btnEnviar').onclick = () => {
+      const p = pacienteSel();
+      if (!p) { toast('No hay un paciente con correo seleccionado'); return; }
       if (!asunto.value.trim() || !cuerpo.value.trim()) {
         toast('Complete asunto y mensaje'); return;
       }
-      const p = pacienteSel();
       const arr = getEnviados();
       arr.push({
+        id: Date.now() + '-' + Math.random().toString(36).slice(2,7),
         to: p.nombre + ' <' + p.email + '>',
         subject: asunto.value.trim(),
         body: cuerpo.value.trim(),

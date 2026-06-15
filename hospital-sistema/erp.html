@@ -6,6 +6,16 @@
   <title>ERP · Dashboard — Hospital La Caleta</title>
   <link rel="stylesheet" href="sistema.css"/>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    .tag-demo {
+      font-size:.6rem; font-weight:700; padding:2px 7px; border-radius:20px;
+      background:var(--warn-bg); color:var(--warn); letter-spacing:.5px;
+    }
+    .tag-real {
+      font-size:.6rem; font-weight:700; padding:2px 7px; border-radius:20px;
+      background:var(--ok-bg); color:var(--ok); letter-spacing:.5px;
+    }
+  </style>
 </head>
 <body>
   <div class="backdrop"></div>
@@ -24,6 +34,8 @@
       <div class="side-group">CRM — Pacientes</div>
       <a class="side-link" href="crm-email.html"><span class="ic">✉️</span> Correos</a>
       <a class="side-link" href="crm-fidelizacion.html"><span class="ic">💙</span> Fidelización</a>
+      <a class="side-link" href="crm-encuesta.html"><span class="ic">📋</span> Encuesta</a>
+      <a class="side-link" href="crm-pacientes.html"><span class="ic">👤</span> Pacientes</a>
 
       <div class="side-foot">
         <p class="note">Datos de demostración.<br>Hospital La Caleta · Chimbote, Áncash.</p>
@@ -53,30 +65,61 @@
       <section class="content">
         <div class="page-head">
           <h1>Tablero de Gestión Hospitalaria</h1>
-          <p>Indicadores operativos y de producción · Periodo 2024 (datos demostrativos)</p>
+          <p>Indicadores operativos del hospital · <span id="fechaHoy"></span></p>
         </div>
 
         <!-- KPIs -->
         <div class="kpi-grid">
           <div class="kpi">
-            <div class="kpi-top"><div class="kpi-ic">🛏️</div><span class="kpi-trend trend-up">82%</span></div>
+            <div class="kpi-top"><div class="kpi-ic">🛏️</div><span class="tag-demo">demo</span></div>
             <div class="kpi-val">98 / 120</div>
             <div class="kpi-label">Camas ocupadas</div>
           </div>
           <div class="kpi">
-            <div class="kpi-top"><div class="kpi-ic">🩺</div><span class="kpi-trend trend-up">+6%</span></div>
-            <div class="kpi-val">142</div>
+            <div class="kpi-top"><div class="kpi-ic">🩺</div><span class="tag-real">en vivo</span></div>
+            <div class="kpi-val" id="kpiAtencionesHoy">0</div>
             <div class="kpi-label">Atenciones de hoy</div>
           </div>
           <div class="kpi">
-            <div class="kpi-top"><div class="kpi-ic">👩‍⚕️</div><span class="kpi-trend trend-flat">=</span></div>
+            <div class="kpi-top"><div class="kpi-ic">👩‍⚕️</div><span class="tag-demo">demo</span></div>
             <div class="kpi-val">87</div>
             <div class="kpi-label">Personal en turno</div>
           </div>
           <div class="kpi">
-            <div class="kpi-top"><div class="kpi-ic">💊</div><span class="kpi-trend trend-down">5 bajos</span></div>
-            <div class="kpi-val">312</div>
+            <div class="kpi-top"><div class="kpi-ic">💊</div><span class="tag-real">en vivo</span></div>
+            <div class="kpi-val" id="kpiInsumos">0</div>
             <div class="kpi-label">Insumos en stock</div>
+          </div>
+        </div>
+
+        <!-- ===== KPIs REALES (datos guardados por el usuario) ===== -->
+        <div class="page-head" style="margin-top:6px;margin-bottom:14px">
+          <h3 style="font-size:1rem;color:var(--azul);display:flex;align-items:center;gap:8px">
+            <span style="width:8px;height:8px;border-radius:50%;background:var(--ok);display:inline-block"></span>
+            Indicadores CRM en vivo
+          </h3>
+          <p style="font-size:.82rem">Datos reales tomados de los módulos de Pacientes y Encuesta. Se conservan al cerrar y volver a abrir.</p>
+        </div>
+        <div class="kpi-grid">
+          <div class="kpi">
+            <div class="kpi-top"><div class="kpi-ic">👥</div><span class="kpi-trend trend-up" id="kpiNuevosTrend">+0</span></div>
+            <div class="kpi-val" id="kpiPacientes">0</div>
+            <div class="kpi-label">Pacientes registrados</div>
+          </div>
+          <div class="kpi">
+            <div class="kpi-top"><div class="kpi-ic">🆕</div></div>
+            <div class="kpi-val" id="kpiNuevos">0</div>
+            <div class="kpi-label">Agregados por el usuario</div>
+          </div>
+          <div class="kpi">
+            <div class="kpi-top"><div class="kpi-ic">📋</div></div>
+            <div class="kpi-val" id="kpiEncuestas">0</div>
+            <div class="kpi-label">Encuestas respondidas</div>
+          </div>
+          <div class="kpi">
+            <div class="kpi-top"><div class="kpi-ic">⭐</div></div>
+            <div class="kpi-val" id="kpiSatisf">—</div>
+            <div class="kpi-label">Satisfacción promedio (de 5)</div>
           </div>
         </div>
 
@@ -85,14 +128,14 @@
           <div class="card2">
             <div class="c-head">
               <h3>Atenciones mensuales</h3>
-              <span class="c-sub">Consulta externa + Emergencia · 2024</span>
+              <span class="c-sub">Consulta externa + Emergencia · 2024 (demo)</span>
             </div>
             <div class="chart-holder"><canvas id="cAtenciones"></canvas></div>
           </div>
           <div class="card2">
             <div class="c-head">
               <h3>Distribución por servicio</h3>
-              <span class="c-sub">% de atenciones</span>
+              <span class="c-sub">% de atenciones (demo)</span>
             </div>
             <div class="chart-holder"><canvas id="cServicios"></canvas></div>
           </div>
@@ -103,14 +146,14 @@
           <div class="card2">
             <div class="c-head">
               <h3>Ocupación de camas por servicio</h3>
-              <span class="c-sub">Camas usadas / total</span>
+              <span class="c-sub">Camas usadas / total (demo)</span>
             </div>
             <div class="chart-holder sm"><canvas id="cCamas"></canvas></div>
           </div>
           <div class="card2">
             <div class="c-head">
               <h3>Cirugías por trimestre</h3>
-              <span class="c-sub">2022 – 2024</span>
+              <span class="c-sub">2022 – 2024 (demo)</span>
             </div>
             <div class="chart-holder sm"><canvas id="cCirugias"></canvas></div>
           </div>
@@ -139,7 +182,21 @@
     renderUserChip();
     initSidebar();
 
-    /* ---- Inventario demo ---- */
+    /* ===== El Dashboard ERP es solo para el Administrador ===== */
+    (function soloAdmin() {
+      const s = Auth.current();
+      if (!s || s.rol !== 'Administrador') {
+        alert('El Dashboard ERP es exclusivo del Administrador. Será redirigido a Pacientes.');
+        window.location.href = 'crm-pacientes.html';
+      }
+    })();
+
+    /* ===== Fecha de hoy en el encabezado ===== */
+    const hoy = new Date();
+    document.getElementById('fechaHoy').textContent =
+      hoy.toLocaleDateString('es-PE', { weekday:'long', day:'2-digit', month:'long', year:'numeric' });
+
+    /* ---- Inventario demo (se declara antes para poder sumar el stock real) ---- */
     const insumos = [
       { n: 'Guantes quirúrgicos (caja)', s: 420, max: 600, st: 'ok' },
       { n: 'Mascarillas N95',            s: 85,  max: 500, st: 'bad' },
@@ -148,6 +205,47 @@
       { n: 'Alcohol 70° (L)',            s: 60,  max: 300, st: 'bad' },
       { n: 'Gasas estériles (paquete)',  s: 175, max: 350, st: 'warn' }
     ];
+
+    /* ===== KPIs reales: leen lo guardado por Pacientes, Encuesta y Correos ===== */
+    (function renderKpisReales() {
+      let pacientes = [];
+      try { pacientes = JSON.parse(Store.get('lc_pacientes')) || []; } catch(e) { pacientes = []; }
+      let encuestas = [];
+      try { encuestas = JSON.parse(Store.get('lc_encuestas')) || []; } catch(e) { encuestas = []; }
+      let enviados = [];
+      try { enviados = JSON.parse(Store.get('lc_enviados')) || []; } catch(e) { enviados = []; }
+
+      /* --- Fila CRM (ya existente) --- */
+      const nuevos = pacientes.filter(p => p.nuevo).length;
+      document.getElementById('kpiPacientes').textContent = pacientes.length;
+      document.getElementById('kpiNuevos').textContent = nuevos;
+      document.getElementById('kpiNuevosTrend').textContent = '+' + nuevos;
+      document.getElementById('kpiEncuestas').textContent = encuestas.length;
+
+      if (encuestas.length) {
+        const prom = encuestas.reduce((s,e) =>
+          s + (e.general + e.espera + e.trato + e.limpieza + e.info) / 5, 0) / encuestas.length;
+        document.getElementById('kpiSatisf').textContent = prom.toFixed(1);
+      } else {
+        document.getElementById('kpiSatisf').textContent = '—';
+      }
+
+      /* --- Atenciones de hoy (REAL, usando la fecha) ---
+         Cuenta encuestas + correos cuyo registro sea de la fecha actual.
+         La fecha se guarda con formato es-PE (ej "14 jun"), así que comparamos
+         con el día y mes de hoy en ese mismo formato. */
+      const marcaHoy = hoy.toLocaleDateString('es-PE', { day:'2-digit', month:'short' });
+      const esDeHoy = (texto) => (texto || '').toLowerCase().includes(marcaHoy.toLowerCase());
+      const encHoy = encuestas.filter(e => esDeHoy(e.fecha)).length;
+      const corrHoy = enviados.filter(c => esDeHoy(c.time)).length;
+      document.getElementById('kpiAtencionesHoy').textContent = encHoy + corrHoy;
+
+      /* --- Insumos en stock (REAL: suma del inventario de la tabla) --- */
+      const totalStock = insumos.reduce((s, i) => s + i.s, 0);
+      document.getElementById('kpiInsumos').textContent = totalStock.toLocaleString('es-PE');
+    })();
+
+    /* ---- Pintar tabla de inventario ---- */
     const estados = {
       ok:   ['b-ok','Suficiente'],
       warn: ['b-warn','Reponer pronto'],
