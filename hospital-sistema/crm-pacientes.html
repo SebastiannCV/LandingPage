@@ -37,7 +37,7 @@
 <body>
   <div class="backdrop"></div>
   <div class="app">
- 
+
     <!-- ===== SIDEBAR ===== -->
     <aside class="sidebar">
       <div class="side-brand">
@@ -55,7 +55,7 @@
         <p class="note">Datos de demostración.<br>Hospital La Caleta · Chimbote, Áncash.</p>
       </div>
     </aside>
- 
+
     <!-- ===== MAIN ===== -->
     <div class="main">
       <header class="topbar">
@@ -72,7 +72,7 @@
           <button class="logout-btn" onclick="Auth.logout()">Salir</button>
         </div>
       </header>
- 
+
       <section class="content">
         <div class="page-head" style="display:flex;justify-content:space-between;align-items:flex-start;gap:16px;flex-wrap:wrap">
           <div>
@@ -83,7 +83,7 @@
             🗑️ Vaciar lista
           </button>
         </div>
- 
+
         <!-- KPIs -->
         <div class="kpi-grid">
           <div class="kpi">
@@ -107,13 +107,13 @@
             <div class="kpi-label">Edad promedio</div>
           </div>
         </div>
- 
+
         <div class="mail-layout">
- 
+
           <!-- ===== Formulario de registro ===== -->
           <div class="card2">
             <div class="c-head"><h3>Registrar nuevo paciente</h3></div>
- 
+
             <div class="form-grid">
               <div class="field full">
                 <label for="pNombre">Nombre completo *</label>
@@ -157,15 +157,15 @@
                 </select>
               </div>
             </div>
- 
+
             <p style="font-size:.72rem;color:var(--muted);margin-top:10px">* Campos obligatorios &nbsp;·&nbsp; ◆ Indique al menos un medio de contacto (teléfono o correo)</p>
- 
+
             <div class="acciones-row">
               <button class="btn2" id="btnGuardar">＋ Registrar paciente</button>
               <button class="btn2 ghost" id="btnLimpiar">Limpiar</button>
             </div>
           </div>
- 
+
           <!-- ===== Lista de pacientes ===== -->
           <div class="card2">
             <div class="c-head">
@@ -181,18 +181,36 @@
               </table>
             </div>
           </div>
- 
+
         </div>
       </section>
     </div>
   </div>
- 
+
   <script src="sistema.js"></script>
   <script>
     Auth.require();
     renderUserChip();
     initSidebar();
- 
+
+    /* ===== URL del Google Apps Script (envío a la hoja de cálculo) ===== */
+    const SHEETS_URL = 'https://script.google.com/macros/s/AKfycbwC7JlrcH3c9Tdi9zgIrNk4sI3hVLU81rsrTnCFdJVqKKBx1QjbfKoRDYZf_Vqe6k77/exec';
+
+    /* Envía una copia del paciente a Google Sheets (en segundo plano).
+       Si falla o no hay internet, NO afecta el registro local. */
+    function enviarASheets(paciente) {
+      try {
+        fetch(SHEETS_URL, {
+          method: 'POST',
+          mode: 'no-cors',
+          headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+          body: JSON.stringify(paciente)
+        }).catch(err => console.log('No se pudo enviar a Sheets:', err));
+      } catch (e) {
+        console.log('Error al enviar a Sheets:', e);
+      }
+    }
+
     /* Ocultar enlace al Dashboard ERP si el usuario no es Administrador */
     (function ocultarDashboardSiNoAdmin(){
       const s = Auth.current();
@@ -201,11 +219,11 @@
         if (l) l.style.display = 'none';
       }
     })();
- 
+
     /* ¿El usuario actual es administrador? Solo el admin puede eliminar/vaciar. */
     const _sesion = Auth.current();
     const esAdmin = !!(_sesion && _sesion.rol === 'Administrador');
- 
+
     /* ===== Persistencia (localStorage vía Store) =====
        La lista inicia VACÍA. Solo contiene los pacientes que el usuario registre. */
     function cargarPacientes() {
@@ -215,7 +233,7 @@
       return arr;
     }
     function guardarPacientes(arr) { Store.set('lc_pacientes', JSON.stringify(arr)); }
- 
+
     /* ===== Registrar ===== */
     document.getElementById('btnGuardar').onclick = () => {
       const nombre = document.getElementById('pNombre').value.trim();
@@ -224,29 +242,31 @@
       const tel    = document.getElementById('pTel').value.trim();
       const email  = document.getElementById('pEmail').value.trim();
       const espec  = document.getElementById('pEspec').value;
- 
+
       if (!nombre || !dni || !espec) { toast('Complete nombre, DNI y especialidad'); return; }
       if (!/^\d{8}$/.test(dni))      { toast('El DNI debe tener 8 dígitos'); return; }
       if (!tel && !email)            { toast('Indique al menos un contacto: teléfono o correo'); return; }
       if (tel && !/^\d{9}$/.test(tel)) { toast('El teléfono debe tener 9 dígitos'); return; }
       if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { toast('El correo no tiene un formato válido'); return; }
- 
+
       const arr = cargarPacientes();
       if (arr.some(p => p.dni === dni)) { toast('Ya existe un paciente con ese DNI'); return; }
- 
-      arr.push({ nombre, dni, edad, tel, email, espec, nuevo: true });
+
+      const paciente = { nombre, dni, edad, tel, email, espec, nuevo: true };
+      arr.push(paciente);
       guardarPacientes(arr);
+      enviarASheets(paciente);   // <-- envía copia a Google Sheets
       toast('Paciente registrado: ' + nombre.split(' ')[0]);
       limpiar();
       render();
     };
- 
+
     document.getElementById('btnLimpiar').onclick = limpiar;
     function limpiar() {
       ['pNombre','pDni','pEdad','pTel','pEmail'].forEach(id => document.getElementById(id).value = '');
       document.getElementById('pEspec').value = '';
     }
- 
+
     /* ===== Eliminar ===== */
     window.eliminarPaciente = function(dni, nombreVisible) {
       if (!esAdmin) { toast('Solo el administrador puede eliminar'); return; }
@@ -262,11 +282,11 @@
         toast('Paciente eliminado');
       }
     };
- 
+
     /* ===== Render ===== */
     const buscador = document.getElementById('buscador');
     buscador.addEventListener('input', render);
- 
+
     function render() {
       const arr = cargarPacientes();
       const filtro = (buscador.value || '').toLowerCase();
@@ -275,7 +295,7 @@
         p.espec.toLowerCase().includes(filtro) ||
         (p.dni || '').includes(filtro)
       );
- 
+
       /* KPIs */
       document.getElementById('kTotal').textContent = arr.length;
       document.getElementById('kNuevos').textContent = arr.filter(p => p.nuevo).length;
@@ -283,7 +303,7 @@
       const edades = arr.map(p => parseInt(p.edad)).filter(n => !isNaN(n));
       document.getElementById('kPromedio').textContent =
         edades.length ? Math.round(edades.reduce((a,b)=>a+b,0)/edades.length) : '—';
- 
+
       /* Tabla */
       document.getElementById('contadorLista').textContent = visibles.length + ' pacientes';
       const tbody = document.getElementById('tablaPacientes');
@@ -309,7 +329,7 @@
         </tr>`;
       }).join('');
     }
- 
+
     /* ===== Vaciar lista (solo Administrador) ===== */
     const btnReiniciar = document.getElementById('btnReiniciar');
     if (esAdmin) {
@@ -323,7 +343,7 @@
         }
       };
     }
- 
+
     render();
 
     function cerrarSesionEIrInicio() {
