@@ -16,14 +16,14 @@
     }
     .stars .star:hover { transform: scale(1.15); }
     .stars .star.on { color: #f5b301; }
-
+ 
     .q-item { margin-bottom: 18px; }
     .q-item > label {
       display: block; font-size: .9rem; font-weight: 600;
       color: var(--ink); margin-bottom: 8px;
     }
     .q-hint { font-size: .74rem; color: var(--muted); margin-top: 5px; }
-
+ 
     .yn-row { display: flex; gap: 10px; }
     .yn-btn {
       flex: 1; padding: 10px; border: 1.5px solid var(--line); background: #fff;
@@ -32,7 +32,7 @@
     }
     .yn-btn.on-si { border-color: var(--ok); background: var(--ok-bg); color: var(--ok); }
     .yn-btn.on-no { border-color: var(--bad); background: var(--bad-bg); color: var(--bad); }
-
+ 
     .res-num { font-family: 'Sora', sans-serif; font-size: 1.6rem; font-weight: 800; color: var(--azul); }
     .res-stars { color: #f5b301; font-size: 1rem; letter-spacing: 1px; }
     .coment-item {
@@ -45,11 +45,11 @@
 <body>
   <div class="backdrop"></div>
   <div class="app">
-
+ 
     <!-- ===== SIDEBAR ===== -->
     <aside class="sidebar">
       <div class="side-brand">
-        <div class="mark">✚</div>
+        <div class="mark" onclick="Auth.logout()" style="cursor:pointer" title="Ir al inicio (cerrar sesión)">✚</div>
         <div><h2>La Caleta</h2><span>ERP · CRM</span></div>
       </div>
       <div class="side-group">ERP — Gestión</div>
@@ -63,7 +63,7 @@
         <p class="note">Datos de demostración.<br>Hospital La Caleta · Chimbote, Áncash.</p>
       </div>
     </aside>
-
+ 
     <!-- ===== MAIN ===== -->
     <div class="main">
       <header class="topbar">
@@ -72,7 +72,6 @@
           <div class="crumb">CRM &nbsp;/&nbsp; <b>Encuesta de Satisfacción</b></div>
         </div>
         <div class="top-right">
-          <input class="search-mini" placeholder="Buscar…"/>
           <div class="user-chip">
             <div class="avatar" data-avatar>DG</div>
             <div class="meta"><strong data-username>Usuario</strong><span data-userrole>Rol</span></div>
@@ -80,7 +79,7 @@
           <button class="logout-btn" onclick="Auth.logout()">Salir</button>
         </div>
       </header>
-
+ 
       <section class="content">
         <div class="page-head" style="display:flex;justify-content:space-between;align-items:flex-start;gap:16px;flex-wrap:wrap">
           <div>
@@ -91,7 +90,7 @@
             🗑️ Reiniciar encuestas
           </button>
         </div>
-
+ 
         <!-- KPIs -->
         <div class="kpi-grid">
           <div class="kpi">
@@ -115,13 +114,13 @@
             <div class="kpi-label">Comentarios recibidos</div>
           </div>
         </div>
-
+ 
         <div class="mail-layout">
-
+ 
           <!-- ===== Formulario de encuesta ===== -->
           <div class="card2">
             <div class="c-head"><h3>Responder encuesta</h3></div>
-
+ 
             <div class="q-item">
               <label for="pacienteEnc">Paciente (opcional)</label>
               <select id="pacienteEnc" style="width:100%;padding:11px 13px;font-size:.9rem;font-family:inherit;border:1.5px solid var(--line);border-radius:10px;background:#fff">
@@ -129,7 +128,7 @@
               </select>
               <p class="q-hint">Puede dejarlo anónimo o asociar la encuesta a un paciente registrado.</p>
             </div>
-
+ 
             <div class="q-item">
               <label>1. ¿Cómo califica la atención recibida en general?</label>
               <div class="stars" data-stars="general"></div>
@@ -150,7 +149,7 @@
               <label>5. ¿Le explicaron de forma clara su diagnóstico o tratamiento?</label>
               <div class="stars" data-stars="info"></div>
             </div>
-
+ 
             <div class="q-item">
               <label>6. ¿Recomendaría el Hospital La Caleta a un familiar o amigo?</label>
               <div class="yn-row">
@@ -158,17 +157,17 @@
                 <button type="button" class="yn-btn" id="ynNo" onclick="setRecomienda(false)">👎 No</button>
               </div>
             </div>
-
+ 
             <div class="q-item">
               <label>7. ¿Desea dejar un comentario o sugerencia? (opcional)</label>
               <textarea id="comentario" placeholder="Escriba aquí su opinión…" style="width:100%;min-height:90px;resize:vertical;padding:12px 14px;font-size:.9rem;font-family:inherit;border:1.5px solid var(--line);border-radius:10px;line-height:1.6"></textarea>
               <p class="q-hint">Su opinión nos ayuda a mejorar la calidad de la atención.</p>
             </div>
-
+ 
             <button class="btn2" id="btnEnviarEncuesta">✓ Enviar encuesta</button>
             <button class="btn2 ghost" id="btnLimpiarEncuesta">Limpiar</button>
           </div>
-
+ 
           <!-- ===== Resultados ===== -->
           <div>
             <div class="card2">
@@ -178,7 +177,7 @@
               </div>
               <div class="chart-holder sm"><canvas id="cAspectos"></canvas></div>
             </div>
-
+ 
             <div class="card2">
               <div class="c-head">
                 <h3>Comentarios recientes</h3>
@@ -187,18 +186,18 @@
               <div id="listaComentarios"></div>
             </div>
           </div>
-
+ 
         </div>
       </section>
     </div>
   </div>
-
+ 
   <script src="sistema.js"></script>
   <script>
     Auth.require();
     renderUserChip();
     initSidebar();
-
+ 
     /* Ocultar enlace al Dashboard ERP si el usuario no es Administrador */
     (function ocultarDashboardSiNoAdmin(){
       const s = Auth.current();
@@ -207,7 +206,7 @@
         if (l) l.style.display = 'none';
       }
     })();
-
+ 
     /* ===== Llenar selector de paciente (opcional) desde lc_pacientes ===== */
     (function llenarPacientes() {
       let pac = [];
@@ -220,7 +219,7 @@
         sel.appendChild(op);
       });
     })();
-
+ 
     /* ===== Estado del formulario en curso ===== */
     const aspectos = ['general','espera','trato','limpieza','info'];
     const etiquetas = {
@@ -228,7 +227,7 @@
       limpieza:'Limpieza', info:'Claridad de la información'
     };
     const respuesta = { general:0, espera:0, trato:0, limpieza:0, info:0, recomienda:null };
-
+ 
     /* Construir las estrellas de cada pregunta */
     document.querySelectorAll('.stars').forEach(cont => {
       const clave = cont.dataset.stars;
@@ -249,26 +248,26 @@
         st.classList.toggle('on', +st.dataset.val <= valor);
       });
     }
-
+ 
     /* Botones Sí / No */
     function setRecomienda(val) {
       respuesta.recomienda = val;
       document.getElementById('ynSi').classList.toggle('on-si', val === true);
       document.getElementById('ynNo').classList.toggle('on-no', val === false);
     }
-
+ 
     /* ===== Persistencia (localStorage vía Store) ===== */
     function getEncuestas() {
       try { return JSON.parse(Store.get('lc_encuestas')) || []; } catch(e){ return []; }
     }
     function setEncuestas(arr) { Store.set('lc_encuestas', JSON.stringify(arr)); }
-
+ 
     /* ===== Enviar encuesta ===== */
     document.getElementById('btnEnviarEncuesta').onclick = () => {
       const faltan = aspectos.filter(a => respuesta[a] === 0);
       if (faltan.length) { toast('Por favor califique las 5 preguntas con estrellas'); return; }
       if (respuesta.recomienda === null) { toast('Indique si recomendaría el hospital'); return; }
-
+ 
       const arr = getEncuestas();
       arr.push({
         general: respuesta.general, espera: respuesta.espera, trato: respuesta.trato,
@@ -283,9 +282,9 @@
       limpiarFormulario();
       render();
     };
-
+ 
     document.getElementById('btnLimpiarEncuesta').onclick = limpiarFormulario;
-
+ 
     function limpiarFormulario() {
       aspectos.forEach(a => respuesta[a] = 0);
       respuesta.recomienda = null;
@@ -295,25 +294,25 @@
       document.getElementById('comentario').value = '';
       document.getElementById('pacienteEnc').value = '';
     }
-
+ 
     /* ===== Render de resultados ===== */
     let chartAspectos;
     function render() {
       const arr = getEncuestas();
       const total = arr.length;
-
+ 
       const prom = (clave) => total ? arr.reduce((s,e)=>s+e[clave],0)/total : 0;
       const promGeneral = total
         ? arr.reduce((s,e)=> s + (e.general+e.espera+e.trato+e.limpieza+e.info)/5, 0)/total
         : 0;
       const recom = total ? Math.round(arr.filter(e=>e.recomienda).length/total*100) : 0;
       const comentarios = arr.filter(e => e.comentario);
-
+ 
       document.getElementById('kTotal').textContent = total;
       document.getElementById('kPromedio').textContent = promGeneral.toFixed(1);
       document.getElementById('kRecomienda').textContent = recom + '%';
       document.getElementById('kComentarios').textContent = comentarios.length;
-
+ 
       /* Comentarios */
       const lista = document.getElementById('listaComentarios');
       document.getElementById('subComentarios').textContent = comentarios.length + ' comentarios';
@@ -326,7 +325,7 @@
             <div class="c-meta">${e.paciente ? '👤 ' + e.paciente : '👤 Anónimo'} · ${e.recomienda ? '👍 Recomienda' : '👎 No recomienda'} · ${e.fecha}</div>
           </div>`).join('');
       }
-
+ 
       /* Gráfico de promedios por aspecto */
       const datos = aspectos.map(a => +prom(a).toFixed(2));
       if (chartAspectos) {
@@ -350,7 +349,7 @@
         });
       }
     }
-
+ 
     /* ===== Botón Reiniciar (solo Administrador) ===== */
     const sesion = Auth.current();
     const btnReiniciar = document.getElementById('btnReiniciar');
@@ -367,7 +366,7 @@
         }
       };
     }
-
+ 
     render();
   </script>
 </body>
