@@ -194,7 +194,7 @@
     initSidebar();
 
     /* ===== URL del Google Apps Script (envío a la hoja de cálculo) ===== */
-    const SHEETS_URL = 'https://script.google.com/macros/s/AKfycbx3JWv4i4gDEJbxJeD9oxyLseNuVEjIpXHmzVZs7Z2-OzTJK_mnhP2YqmjYPku6WNaT4A/exec';
+    const SHEETS_URL = 'https://script.google.com/macros/s/AKfycbwC7JlrcH3c9Tdi9zgIrNk4sI3hVLU81rsrTnCFdJVqKKBx1QjbfKoRDYZf_Vqe6k77/exec';
 
     /* Envía una copia del paciente a Google Sheets (en segundo plano).
        Si falla o no hay internet, NO afecta el registro local. */
@@ -208,6 +208,21 @@
         }).catch(err => console.log('No se pudo enviar a Sheets:', err));
       } catch (e) {
         console.log('Error al enviar a Sheets:', e);
+      }
+    }
+
+    /* Avisa a la hoja para marcar a un paciente como "Dado de baja" (por DNI).
+       No borra la fila: solo cambia su estado. En segundo plano, sin afectar lo local. */
+    function marcarBajaEnSheets(dni) {
+      try {
+        fetch(SHEETS_URL, {
+          method: 'POST',
+          mode: 'no-cors',
+          headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+          body: JSON.stringify({ accion: 'baja', dni: dni })
+        }).catch(err => console.log('No se pudo marcar baja en Sheets:', err));
+      } catch (e) {
+        console.log('Error al marcar baja en Sheets:', e);
       }
     }
 
@@ -276,8 +291,10 @@
         : arr.findIndex(p => p.nombre === nombreVisible && !p.dni);
       if (idx === -1) return;
       if (confirm('¿Eliminar a ' + arr[idx].nombre + ' del registro?')) {
+        const dniBaja = arr[idx].dni;   // guardamos el DNI antes de quitarlo
         arr.splice(idx, 1);
         guardarPacientes(arr);
+        if (dniBaja) marcarBajaEnSheets(dniBaja);   // <-- marca "Dado de baja" en la hoja
         render();
         toast('Paciente eliminado');
       }
