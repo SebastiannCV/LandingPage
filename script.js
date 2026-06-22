@@ -1,3 +1,13 @@
+// ── Menú hamburguesa (móvil) ──
+function toggleMenu() {
+  const menu = document.getElementById('navMenu');
+  if (menu) menu.classList.toggle('open');
+}
+function closeMenu() {
+  const menu = document.getElementById('navMenu');
+  if (menu) menu.classList.remove('open');
+}
+ 
 // ── Sombra en nav al hacer scroll ──
 window.addEventListener('scroll', () => {
   const nav = document.querySelector('nav');
@@ -5,7 +15,7 @@ window.addEventListener('scroll', () => {
     ? '0 4px 16px rgba(0,0,0,0.4)'
     : 'none';
 });
-
+ 
 // ── Animación al aparecer elementos ──
 const items = document.querySelectorAll(
   '.card, .chart-box, .horario-item, .barra-item, .mapa-dato'
@@ -18,14 +28,14 @@ const observer = new IntersectionObserver((entries) => {
     }
   });
 }, { threshold: 0.1 });
-
+ 
 items.forEach(el => {
   el.style.opacity = '0';
   el.style.transform = 'translateY(20px)';
   el.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
   observer.observe(el);
 });
-
+ 
 // ── BPM: abrir imagen al hacer clic ──
 const bpmImgWrap = document.getElementById('bpmImgWrap');
 if (bpmImgWrap) {
@@ -33,34 +43,34 @@ if (bpmImgWrap) {
     openBPMModal();
   });
 }
-
+ 
 function openBPMModal() {
   const modal = document.getElementById('bpmModal');
   if (modal) modal.classList.add('active');
   document.body.style.overflow = 'hidden';
 }
-
+ 
 function closeBPMModal() {
   const modal = document.getElementById('bpmModal');
   if (modal) modal.classList.remove('active');
   document.body.style.overflow = '';
 }
-
+ 
 function toggleBPMZoom() {
   openBPMModal();
 }
-
+ 
 // Cerrar modal con tecla Escape
 document.addEventListener('keydown', (e) => {
   if (e.key === 'Escape') { closeBPMModal(); closeCarteraModal(); closeProcesosModal(); }
 });
-
+ 
 // ── Colores para gráficos ──
 const azul        = '#1a3a6b';
 const celeste     = '#00aeef';
 const celesClaro  = '#7dd4f5';
 const celesMin    = '#b3e5fc';
-
+ 
 // ── Gráfico 1: Barras — atenciones mensuales ──
 new Chart(document.getElementById('chartAtenciones'), {
   type: 'bar',
@@ -90,7 +100,7 @@ new Chart(document.getElementById('chartAtenciones'), {
     }
   }
 });
-
+ 
 // ── Gráfico 2: Dona — distribución por servicio ──
 new Chart(document.getElementById('chartServicios'), {
   type: 'doughnut',
@@ -118,7 +128,7 @@ new Chart(document.getElementById('chartServicios'), {
     }
   }
 });
-
+ 
 // ── Gráfico 3: Barras horizontales — género ──
 new Chart(document.getElementById('chartGenero'), {
   type: 'bar',
@@ -149,7 +159,7 @@ new Chart(document.getElementById('chartGenero'), {
     }
   }
 });
-
+ 
 // ── Gráfico 4: Línea — cirugías por trimestre ──
 new Chart(document.getElementById('chartCirugias'), {
   type: 'line',
@@ -183,7 +193,7 @@ new Chart(document.getElementById('chartCirugias'), {
     }
   }
 });
-
+ 
 // ── Cartera de Servicios: modal ──
 function openCarteraModal() {
   const m = document.getElementById('carteraModal');
@@ -195,7 +205,7 @@ function closeCarteraModal() {
   if (m) m.classList.remove('active');
   document.body.style.overflow = '';
 }
-
+ 
 // ── Procesos (BPM): modal ──
 function openProcesosModal() {
   const m = document.getElementById('procesosModal');
