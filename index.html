@@ -4,6 +4,7 @@
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Hospital La Caleta – Chimbote</title>
+  <link rel="icon" type="image/png" href="logo.png"/>
   <link rel="stylesheet" href="style.css"/>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -16,13 +17,17 @@
       <img src="logo.png" alt="Hospital La Caleta Logo" class="logo-img"/>
       Hospital <strong>La Caleta</strong>
     </div>
-    <ul>
-      <li><a href="#servicios">Servicios</a></li>
-      <li><li><a href="#" onclick="openCarteraModal(); return false;">Cartera de Servicios</a></li></li>
-      <li><a href="#nosotros">Nosotros</a></li>
-      <li><a href="#dashboard">Estadísticas</a></li>
-      <li><a href="#" onclick="openProcesosModal(); return false;">Procesos</a></li>
-      <li><a href="#contacto">Contacto</a></li>
+    <button class="nav-toggle" id="navToggle" onclick="toggleMenu()" aria-label="Abrir menú">
+      <i class="fas fa-bars"></i>
+    </button>
+    <ul id="navMenu">
+      <li><a href="#servicios" onclick="closeMenu()">Servicios</a></li>
+      <li><a href="#" onclick="openCarteraModal(); closeMenu(); return false;">Cartera de Servicios</a></li>
+      <li><a href="#nosotros" onclick="closeMenu()">Nosotros</a></li>
+      <li><a href="#dashboard" onclick="closeMenu()">Estadísticas</a></li>
+      <li><a href="#" onclick="openProcesosModal(); closeMenu(); return false;">Procesos</a></li>
+      <li><a href="#contacto" onclick="closeMenu()">Contacto</a></li>
+      <li class="nav-acceso-mobile"><a href="hospital-sistema/login.html"><i class="fas fa-right-to-bracket"></i> Acceso al sistema</a></li>
     </ul>
     <a href="hospital-sistema/login.html" class="btn-acceso">
       <i class="fas fa-right-to-bracket"></i> Acceso al sistema
