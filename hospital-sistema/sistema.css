@@ -372,7 +372,7 @@ table.tbl tr:hover td { background: #f7fafd; }
   display: none; position: fixed; inset: 0; background: rgba(14,34,65,.45); z-index: 40;
 }
 .backdrop.show { display: block; }
-
+ 
 /* =====================================================
    LOGO en el cuadro de marca del sidebar (en vez de ✚)
    ===================================================== */
@@ -385,4 +385,47 @@ table.tbl tr:hover td { background: #f7fafd; }
   border-color: rgba(255,255,255,.35);
   color: transparent;
   font-size: 0;
+}
+ 
+/* =====================================================
+   RESPONSIVE AMPLIADO — topbar, tablas y gráficos en móvil
+   ===================================================== */
+ 
+/* Evitar desbordes horizontales en todo el sistema */
+body { max-width: 100%; overflow-x: hidden; }
+img, canvas { max-width: 100%; }
+ 
+/* La topbar se mantiene visible y ordenada */
+.topbar { position: -webkit-sticky; position: sticky; top: 0; gap: 10px; }
+.top-right { flex-shrink: 1; min-width: 0; }
+ 
+/* Tablas con scroll horizontal si no caben (no se desbordan) */
+.tabla-scroll, .card2 { overflow-x: auto; }
+table.tbl { min-width: 460px; }
+ 
+/* Tablets y móviles anchos */
+@media (max-width: 860px) {
+  .content { padding: 22px 18px 44px; }
+  .topbar { padding: 13px 18px; }
+  .search-mini { width: 160px; }
+}
+ 
+/* Móviles: compactar la barra superior */
+@media (max-width: 620px) {
+  .topbar { padding: 12px 14px; gap: 8px; }
+  .search-mini { display: none; }            /* el buscador se oculta para dar espacio */
+  .user-chip .meta { display: none; }        /* ocultar nombre/rol: deja solo el avatar */
+  .top-right { gap: 10px; }
+  .logout-btn { padding: 7px 12px; font-size: .78rem; }
+  .crumb { font-size: .74rem; }
+ 
+  .page-head h1 { font-size: 1.25rem; }
+  .kpi .kpi-val { font-size: 1.55rem; }
+}
+ 
+/* Móviles pequeños */
+@media (max-width: 400px) {
+  .content { padding: 16px 12px 36px; }
+  .logout-btn { padding: 6px 10px; font-size: .74rem; }
+  .menu-toggle { width: 36px; height: 36px; font-size: 1.1rem; }
 }
