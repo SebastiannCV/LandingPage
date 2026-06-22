@@ -41,7 +41,7 @@
     <!-- ===== SIDEBAR ===== -->
     <aside class="sidebar">
       <div class="side-brand">
-        <div class="mark" onclick="Auth.logout()" style="cursor:pointer" title="Ir al inicio (cerrar sesión)">✚</div>
+        <div class="mark" onclick="cerrarSesionEIrInicio()" style="cursor:pointer" title="Ir al inicio (cerrar sesión)">✚</div>
         <div><h2>La Caleta</h2><span>ERP · CRM</span></div>
       </div>
       <div class="side-group">ERP — Gestión</div>
@@ -325,6 +325,11 @@
     }
  
     render();
+
+    function cerrarSesionEIrInicio() {
+      Store.del('lc_session');        // cierra la sesión
+      window.location.href = '../index.html';  // va a la página principal
+    }
   </script>
 </body>
 </html>
