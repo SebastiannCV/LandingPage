@@ -1150,3 +1150,116 @@ footer {
 #bpmModal { z-index: 1100; }
 
 .links-doble a.link-item { text-decoration: none; }
+
+/* =====================================================
+   MENÚ HAMBURGUESA (móvil) y ajustes responsive ampliados
+   ===================================================== */
+.nav-toggle {
+  display: none;
+  background: transparent;
+  border: none;
+  color: #fff;
+  font-size: 1.5rem;
+  cursor: pointer;
+  padding: 4px 8px;
+}
+.nav-acceso-mobile { display: none; }
+ 
+@media (max-width: 900px) {
+  /* Mostrar el botón hamburguesa y ocultar el botón de acceso de escritorio */
+  .nav-toggle { display: inline-flex; align-items: center; }
+  .btn-acceso { display: none; }
+ 
+  nav { flex-wrap: wrap; }
+ 
+  /* El menú se despliega en columna debajo del nav */
+  nav ul {
+    display: none;
+    flex-direction: column;
+    gap: 0;
+    width: 100%;
+    margin-top: 10px;
+    order: 3;
+  }
+  nav ul.open { display: flex; }
+  nav ul li { width: 100%; }
+  nav ul li a {
+    display: block;
+    padding: 12px 6px;
+    border-top: 1px solid rgba(255,255,255,0.12);
+    font-size: 0.95rem;
+  }
+  /* Mostrar el acceso al sistema dentro del menú desplegable */
+  .nav-acceso-mobile { display: block; }
+  .nav-acceso-mobile a { color: var(--cel) !important; font-weight: 700; }
+}
+ 
+/* Asegurar que nada se desborde horizontalmente */
+/* overflow-x solo en body: en html rompe el position:sticky del nav */
+body { max-width: 100%; overflow-x: hidden; }
+img, iframe, canvas { max-width: 100%; }
+ 
+/* Tablets / móviles anchos */
+@media (max-width: 768px) {
+  #hero { padding: 60px 18px 44px; }
+  #hero h1 { font-size: 1.9rem; }
+  .section-header h2 { font-size: 1.5rem; }
+  .cartera-grid { grid-template-columns: 1fr; }
+}
+ 
+/* Móviles estándar */
+@media (max-width: 600px) {
+  nav { padding: 10px 14px; }
+  .logo { font-size: 0.9rem; }
+  .logo-img { height: 34px; }
+ 
+  #hero { padding: 50px 16px 38px; }
+  #hero h1 { font-size: 1.6rem; }
+  #hero .desc { font-size: 0.9rem; }
+ 
+  .stat strong { font-size: 1.5rem; }
+  .stat span { font-size: 0.68rem; }
+ 
+  .section-header { margin-bottom: 28px; }
+  .section-header h2 { font-size: 1.35rem; }
+ 
+  #servicios, #especialidades, #bpm { padding: 36px 14px; }
+  #dashboard { padding: 36px 14px; }
+  #mapa { padding: 18px 14px; }
+ 
+  .chart-wrap, .chart-wrap--donut { height: 240px; }
+ 
+  .cartera-modal-content { padding: 24px 16px; max-height: 92vh; }
+  .cartera-modal-header h2 { font-size: 1.3rem; }
+  .cartera-modal { padding: 12px; }
+ 
+  .bpm-diagram-header { padding: 10px 12px; }
+  .bpm-tag { font-size: 0.74rem; }
+  .bpm-zoom-btn { font-size: 0.72rem; padding: 6px 10px; }
+  .bpm-img-wrap { padding: 12px; }
+ 
+  .footer-bottom { flex-direction: column; align-items: flex-start; }
+}
+ 
+/* Móviles pequeños */
+@media (max-width: 380px) {
+  #hero h1 { font-size: 1.4rem; }
+  .stat { min-width: 100%; }
+  .section-header h2 { font-size: 1.2rem; }
+}
+ 
+/* ── Nav siempre visible al hacer scroll en móvil ── */
+@media (max-width: 900px) {
+  nav {
+    position: -webkit-sticky;   /* compatibilidad navegadores antiguos */
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    width: 100%;
+  }
+  /* Cuando el menú está desplegado, permitir scroll interno si no cabe */
+  nav ul.open {
+    max-height: calc(100vh - 64px);
+    overflow-y: auto;
+  }
+}

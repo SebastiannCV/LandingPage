@@ -4,6 +4,7 @@
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>CRM · Fidelización — Hospital La Caleta</title>
+  <link rel="icon" type="image/png" href="logo.png"/>
   <link rel="stylesheet" href="sistema.css"/>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <style>
@@ -20,11 +21,11 @@
 <body>
   <div class="backdrop"></div>
   <div class="app">
-
+ 
     <!-- ===== SIDEBAR ===== -->
     <aside class="sidebar">
       <div class="side-brand">
-        <div class="mark">✚</div>
+        <div class="mark" onclick="Auth.logout()" style="cursor:pointer" title="Ir al inicio (cerrar sesión)">✚</div>
         <div><h2>La Caleta</h2><span>ERP · CRM</span></div>
       </div>
       <div class="side-group">ERP — Gestión</div>
@@ -38,7 +39,7 @@
         <p class="note">Datos de demostración.<br>Hospital La Caleta · Chimbote, Áncash.</p>
       </div>
     </aside>
-
+ 
     <!-- ===== MAIN ===== -->
     <div class="main">
       <header class="topbar">
@@ -47,7 +48,6 @@
           <div class="crumb">CRM &nbsp;/&nbsp; <b>Fidelización</b></div>
         </div>
         <div class="top-right">
-          <input class="search-mini" placeholder="Buscar…"/>
           <div class="user-chip">
             <div class="avatar" data-avatar>DG</div>
             <div class="meta"><strong data-username>Usuario</strong><span data-userrole>Rol</span></div>
@@ -55,13 +55,13 @@
           <button class="logout-btn" onclick="Auth.logout()">Salir</button>
         </div>
       </header>
-
+ 
       <section class="content">
         <div class="page-head">
           <h1>Tablero de Fidelización — CRM</h1>
           <p>Relación con el paciente: satisfacción y segmentación. Las tarjetas en vivo usan los datos reales de Encuesta y Pacientes.</p>
         </div>
-
+ 
         <!-- KPIs -->
         <div class="kpi-grid">
           <div class="kpi">
@@ -85,7 +85,7 @@
             <div class="kpi-label">Pacientes nuevos</div>
           </div>
         </div>
-
+ 
         <!-- Gráficos -->
         <div class="grid-23">
           <div class="card2">
@@ -103,7 +103,7 @@
             <div class="chart-holder"><canvas id="cSegmento"></canvas><div class="empty-msg" id="emptySegmento" style="display:none">Aún no hay pacientes registrados.</div></div>
           </div>
         </div>
-
+ 
         <div class="grid-2">
           <div class="card2">
             <div class="c-head">
@@ -112,7 +112,7 @@
             </div>
             <div class="chart-holder sm"><canvas id="cRecom"></canvas><div class="empty-msg" id="emptyRecom" style="display:none">Aún no hay encuestas registradas.</div></div>
           </div>
-
+ 
           <div class="card2">
             <div class="c-head">
               <h3>Pacientes por especialidad</h3>
@@ -127,13 +127,13 @@
       </section>
     </div>
   </div>
-
+ 
   <script src="sistema.js"></script>
   <script>
     Auth.require();
     renderUserChip();
     initSidebar();
-
+ 
     /* Ocultar enlace al Dashboard ERP si el usuario no es Administrador */
     (function ocultarDashboardSiNoAdmin(){
       const s = Auth.current();
@@ -142,18 +142,18 @@
         if (l) l.style.display = 'none';
       }
     })();
-
+ 
     /* ===== Leer datos reales guardados ===== */
     let pacientes = [];
     try { pacientes = JSON.parse(Store.get('lc_pacientes')) || []; } catch(e) { pacientes = []; }
     let encuestas = [];
     try { encuestas = JSON.parse(Store.get('lc_encuestas')) || []; } catch(e) { encuestas = []; }
-
+ 
     /* ===== KPIs ===== */
     const nuevos = pacientes.filter(p => p.nuevo).length;
     document.getElementById('kActivos').textContent = pacientes.length;
     document.getElementById('kNuevos').textContent = nuevos;
-
+ 
     if (encuestas.length) {
       const promGeneral = encuestas.reduce((s,e) =>
         s + (e.general + e.espera + e.trato + e.limpieza + e.info) / 5, 0) / encuestas.length;
@@ -161,9 +161,9 @@
       const recom = Math.round(encuestas.filter(e => e.recomienda).length / encuestas.length * 100);
       document.getElementById('kRecom').textContent = recom + '%';
     }
-
+ 
     const baseOpts = { responsive:true, maintainAspectRatio:false };
-
+ 
     /* ===== Gráfico 1: Satisfacción por aspecto (encuestas reales) ===== */
     if (encuestas.length) {
       const aspectos = ['general','espera','trato','limpieza','info'];
@@ -181,7 +181,7 @@
       document.getElementById('cAspectos').style.display = 'none';
       document.getElementById('emptyAspectos').style.display = 'flex';
     }
-
+ 
     /* ===== Gráfico 2: Segmentación nuevos vs existentes ===== */
     if (pacientes.length) {
       const existentes = pacientes.length - nuevos;
@@ -199,7 +199,7 @@
       document.getElementById('cSegmento').style.display = 'none';
       document.getElementById('emptySegmento').style.display = 'flex';
     }
-
+ 
     /* ===== Gráfico 3: Recomendación (encuestas reales) ===== */
     if (encuestas.length) {
       const si = encuestas.filter(e => e.recomienda).length;
@@ -217,7 +217,7 @@
       document.getElementById('cRecom').style.display = 'none';
       document.getElementById('emptyRecom').style.display = 'flex';
     }
-
+ 
     /* ===== Tabla: pacientes por especialidad ===== */
     const tbody = document.getElementById('tablaEspec');
     if (pacientes.length) {
